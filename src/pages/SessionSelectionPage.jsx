@@ -163,7 +163,7 @@ export default function SessionSelectionPage() {
         <StepIndicator current={1} />
 
         <p className="text-gray-500 text-sm mb-6 text-center">
-          Select the type of mentorship session that fits your needs.
+          Spend ₹99 now, earn ₹9L later!
         </p>
 
         {/* Skeleton Loading */}
