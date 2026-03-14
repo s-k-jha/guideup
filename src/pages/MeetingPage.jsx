@@ -84,7 +84,7 @@ export default function MeetingPage() {
       <div className="bg-white shadow-lg rounded-xl p-8 max-w-md w-full text-center">
 
         <h1 className="text-2xl font-bold text-gray-800 mb-2">
-          Guideup Session
+          GuideUp Session
         </h1>
 
         {timeLeft && (

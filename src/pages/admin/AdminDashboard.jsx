@@ -21,7 +21,7 @@ export default function AdminDashboard() {
             </div>
             <div>
               <h1 className="font-bold text-gray-900">Admin Dashboard</h1>
-              <p className="text-xs text-gray-400">Guideup</p>
+              <p className="text-xs text-gray-400">GuideUp</p>
             </div>
           </div>
           <button onClick={logout} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-red-500 transition-colors">

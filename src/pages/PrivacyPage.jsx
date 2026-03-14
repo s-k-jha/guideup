@@ -5,7 +5,7 @@ export default function PrivacyPage() {
       <h1 className="text-3xl font-bold mb-8">Privacy Policy</h1>
 
       <p className="text-gray-600 mb-6">
-        Guideup respects your privacy and is committed to protecting your personal information.
+        GuideUp respects your privacy and is committed to protecting your personal information.
       </p>
 
       <h2 className="text-xl font-semibold mt-8 mb-3">Information We Collect</h2>
@@ -20,7 +20,7 @@ export default function PrivacyPage() {
 
       <h2 className="text-xl font-semibold mt-8 mb-3">Payment Information</h2>
       <p className="text-gray-600">
-        Payments are processed securely via Razorpay. Guideup does not store your payment card details.
+        Payments are processed securely via Razorpay. GuideUp does not store your payment card details.
       </p>
 
       <h2 className="text-xl font-semibold mt-8 mb-3">Data Protection</h2>
