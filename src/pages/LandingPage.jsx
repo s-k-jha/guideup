@@ -309,7 +309,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6 text-center">
 
           <h2 className="text-3xl font-bold mb-8">
-            Don't just take our word for it — compare for yourself
+            Why students choose GuideUp
           </h2>
 
           <div className="grid md:grid-cols-2 gap-8">
