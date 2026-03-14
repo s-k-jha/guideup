@@ -1,10 +1,13 @@
 import axios from "axios"
 
 const api = axios.create({
-  baseURL: "https://guideup-api.onrender.com/api"
+  baseURL: "http://localhost:5000/api"
+  // production ke time
+  // baseURL: "https://guideup-api.onrender.com/api"
 })
 
 api.interceptors.request.use((config) => {
+
   const token = localStorage.getItem("admin_token")
 
   if (token) {
@@ -12,6 +15,7 @@ api.interceptors.request.use((config) => {
   }
 
   return config
+
 })
 
 export default api

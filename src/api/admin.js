@@ -6,5 +6,8 @@ export const adminLogin = (credentials) =>
 export const getBookings = () =>
   api.get('/admin/bookings').then(r => r.data)
 
-export const assignMentor = (bookingId, mentorName) =>
-  api.patch(`/admin/bookings/${bookingId}/assign-mentor`, { mentorName }).then(r => r.data)
+export const assignMentor = (bookingId, mentorId) =>
+  api.patch(`/admin/bookings/${bookingId}/assign-mentor`, { mentorId }).then(r => r.data)
+
+export const getMentors = () =>
+  api.get('/admin/mentors').then(r => r.data)
