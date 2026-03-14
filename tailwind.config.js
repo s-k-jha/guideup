@@ -28,23 +28,13 @@ export default {
         'card-hover': '0 8px 32px 0 rgba(249,115,22,0.15)',
       },
 
-      /* NEW: marquee animation */
-      animation: {
-        marquee: 'marquee 35s linear infinite',
-      },
-
-      keyframes: {
-        marquee: {
-          '0%': { transform: 'translateX(100%)' },
-          '100%': { transform: 'translateX(-100%)' },
-        },
-      },
       animation: {
         marquee: 'marquee 30s linear infinite',
         ctaGlow: 'ctaGlow 2.5s ease-in-out infinite',
       },
 
       keyframes: {
+
         marquee: {
           '0%': { transform: 'translateX(-100%)' },
           '100%': { transform: 'translateX(100%)' },
@@ -52,15 +42,16 @@ export default {
 
         ctaGlow: {
           '0%,100%': {
-            boxShadow: '0 0 0px rgba(34,197,94,0)',
-            transform: 'scale(1)'
+            boxShadow: '0 0 0 rgba(249,115,22,0)',
+            transform: 'scale(1)',
           },
           '50%': {
-            boxShadow: '0 0 25px rgba(34,197,94,0.6)',
-            transform: 'scale(1.04)'
-          }
-        }
-      }
+            boxShadow: '0 0 25px rgba(249,115,22,0.7)',
+            transform: 'scale(1.05)',
+          },
+        },
+
+      },
 
     },
   },
