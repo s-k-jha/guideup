@@ -5,12 +5,12 @@ export default function TermsPage() {
       <h1 className="text-3xl font-bold mb-8">Terms & Conditions</h1>
 
       <p className="text-gray-600 mb-6">
-        Welcome to Guideup. By accessing or using our platform, you agree to the following terms.
+        Welcome to GuideUp. By accessing or using our platform, you agree to the following terms.
       </p>
 
       <h2 className="text-xl font-semibold mt-8 mb-3">1. Service</h2>
       <p className="text-gray-600">
-        Guideup provides mock interview sessions conducted by experienced professionals to help students prepare for technical interviews.
+        GuideUp provides mock interview sessions conducted by experienced professionals to help students prepare for technical interviews.
       </p>
 
       <h2 className="text-xl font-semibold mt-8 mb-3">2. Booking</h2>
@@ -20,7 +20,7 @@ export default function TermsPage() {
 
       <h2 className="text-xl font-semibold mt-8 mb-3">3. Payments</h2>
       <p className="text-gray-600">
-        Payments for sessions are processed securely through Razorpay. Guideup does not store your payment details.
+        Payments for sessions are processed securely through Razorpay. GuideUp does not store your payment details.
       </p>
 
       <h2 className="text-xl font-semibold mt-8 mb-3">4. User Responsibility</h2>
@@ -30,7 +30,7 @@ export default function TermsPage() {
 
       <h2 className="text-xl font-semibold mt-8 mb-3">5. Changes to Terms</h2>
       <p className="text-gray-600">
-        Guideup reserves the right to update these terms at any time.
+        GuideUp reserves the right to update these terms at any time.
       </p>
 
       <p className="text-gray-500 text-sm mt-10">

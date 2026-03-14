@@ -90,7 +90,7 @@ export default function CheckoutPage() {
         amount: orderData.data.amount || orderData.amount,
         currency: "INR",
         order_id: orderData.data?.orderId || orderData.orderId, 
-        name: "Guideup",
+        name: "GuideUp",
         description: booking.session.title,
         handler: async (response) => {
           try {

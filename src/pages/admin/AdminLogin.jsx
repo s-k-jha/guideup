@@ -36,7 +36,7 @@ export default function AdminLogin() {
             <Lock className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-2xl font-bold text-gray-900">Admin Login</h1>
-          <p className="text-gray-500 text-sm mt-1">Guideup Dashboard</p>
+          <p className="text-gray-500 text-sm mt-1">GuideUp Dashboard</p>
         </div>
 
         <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-6">

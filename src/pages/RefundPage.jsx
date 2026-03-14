@@ -5,7 +5,7 @@ export default function RefundPage() {
       <h1 className="text-3xl font-bold mb-8">Refund Policy</h1>
 
       <p className="text-gray-600 mb-6">
-        At Guideup, we strive to provide valuable mock interview experiences.
+        At GuideUp, we strive to provide valuable mock interview experiences.
       </p>
 
       <h2 className="text-xl font-semibold mt-8 mb-3">Session Cancellation</h2>

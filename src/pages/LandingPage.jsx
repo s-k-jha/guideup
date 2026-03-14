@@ -23,7 +23,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
 
           <div className="text-xl font-bold text-orange-600">
-            Guideup
+            GuideUp
           </div>
 
           <button
@@ -40,9 +40,9 @@ export default function LandingPage() {
       {/* MOVING STRIP */}
       <div className="w-full overflow-hidden bg-orange-500 text-white py-2">
         <div className="whitespace-nowrap animate-marquee text-sm font-medium">
-          Guideup helps students experience real interview environments with expert mentors so you can crack internships and placements with confidence.
+          GuideUp helps students practice real technical mock interviews with expert engineers.
           &nbsp;&nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp;&nbsp;
-          Guideup helps students experience real interview environments with expert mentors so you can crack internships and placements with confidence ⭐ Real experts | Real interview questions | Real placement preparation
+          GuideUp helps students experience real interview environments with expert mentors so you can crack internships and placements with confidence ⭐ Real experts | Real interview questions | Real placement preparation
         </div>
       </div>
 
@@ -64,15 +64,15 @@ export default function LandingPage() {
             </div>
 
             <h1 className="text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              Practice real
+              GuideUp helps you
               <span className="block bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
-                technical interviews
+                practice real technical interviews
               </span>
               before they matter
             </h1>
 
             <p className="text-lg text-gray-600 mb-8 max-w-xl">
-              Guideup helps students experience real technical interviews
+              GuideUp helps students experience real technical interviews
               with engineers and domain experts — so placements feel familiar,
               not frightening.
             </p>
@@ -134,6 +134,12 @@ export default function LandingPage() {
 
         </div>
       </section>
+      <div className="sr-only">
+  GuideUp is a platform where students practice real technical mock interviews 
+  with experienced engineers. GuideUp helps students prepare for software 
+  engineering placements, internships, and coding interviews through realistic 
+  interview simulations and detailed feedback.
+</div>
 
 
       {/* STORY TIMELINE */}
@@ -142,7 +148,7 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-6 text-center mb-16">
 
           <h2 className="text-3xl font-bold mb-4">
-            Why Guideup exists
+            Why GuideUp exists
           </h2>
 
           <p className="text-gray-600 text-lg">
@@ -183,7 +189,7 @@ export default function LandingPage() {
         </div>
 
         <div className="text-center mt-14 text-lg text-gray-700">
-          Guideup helps students gain this experience
+          GuideUp helps students gain this experience
           <span className="font-semibold"> before real placements begin.</span>
         </div>
 
@@ -196,7 +202,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-6">
 
           <h2 className="text-3xl font-bold text-center mb-16">
-            How Guideup mock interviews work
+            How GuideUp mock interviews work
           </h2>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -328,7 +334,7 @@ export default function LandingPage() {
             <div className="bg-orange-500 text-white p-8 rounded-xl shadow-lg">
 
               <div className="font-semibold mb-4">
-                Guideup Mock Interviews
+                GuideUp Mock Interviews
               </div>
 
               <ul className="space-y-2 text-sm">
@@ -389,11 +395,11 @@ export default function LandingPage() {
             {/* Brand Section */}
             <div>
               <div className="text-xl font-bold text-orange-600 mb-3">
-                Guideup
+                GuideUp
               </div>
 
               <p className="text-gray-600 leading-relaxed max-w-sm">
-                Guideup helps students experience real technical interviews with
+                GuideUp helps students experience real technical interviews with
                 engineers and domain experts so placements feel familiar, not frightening.
               </p>
             </div>
@@ -459,7 +465,7 @@ export default function LandingPage() {
           {/* Bottom Section */}
           <div className="border-t border-gray-200 mt-10 pt-6 text-center text-gray-500 text-sm">
 
-            © {new Date().getFullYear()} Guideup. All rights reserved.
+            © {new Date().getFullYear()} GuideUp. All rights reserved.
 
           </div>
 
