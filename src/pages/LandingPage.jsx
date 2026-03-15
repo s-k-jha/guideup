@@ -38,13 +38,13 @@ export default function LandingPage() {
       </nav>
 
       {/* MOVING STRIP */}
-      <div className="w-full overflow-hidden bg-orange-500 text-white py-2">
+      {/* <div className="w-full overflow-hidden bg-orange-500 text-white py-2">
         <div className="whitespace-nowrap animate-marquee text-sm font-medium">
-          GuideUp helps students practice real technical mock interviews with expert engineers.
+          500+ mock interviews conducted
           &nbsp;&nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp;&nbsp;
-          GuideUp helps students experience real interview environments with expert mentors so you can crack internships and placements with confidence ⭐ Real experts | Real interview questions | Real placement preparation
+          Real engineers • Real interview questions • Detailed feedback
         </div>
-      </div>
+      </div> */}
 
 
       {/* HERO */}
