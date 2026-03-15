@@ -38,13 +38,13 @@ export default function LandingPage() {
       </nav>
 
       {/* MOVING STRIP */}
-      <div className="w-full overflow-hidden bg-orange-500 text-white py-2">
+      {/* <div className="w-full overflow-hidden bg-orange-500 text-white py-2">
         <div className="whitespace-nowrap animate-marquee text-sm font-medium">
-          GuideUp helps students practice real technical mock interviews with expert engineers.
+          500+ mock interviews conducted
           &nbsp;&nbsp;&nbsp;&nbsp; • &nbsp;&nbsp;&nbsp;&nbsp;
-          GuideUp helps students experience real interview environments with expert mentors so you can crack internships and placements with confidence ⭐ Real experts | Real interview questions | Real placement preparation
+          Real engineers • Real interview questions • Detailed feedback
         </div>
-      </div>
+      </div> */}
 
 
       {/* HERO */}
@@ -54,7 +54,7 @@ export default function LandingPage() {
 
         <div className="absolute inset-0 opacity-[0.04] bg-[linear-gradient(#000_1px,transparent_1px),linear-gradient(90deg,#000_1px,transparent_1px)] bg-[size:40px_40px]" />
 
-        <div className="relative max-w-7xl mx-auto px-6 py-24 grid lg:grid-cols-2 gap-16 items-center">
+        <div className="relative max-w-7xl mx-auto px-6 py-12 grid lg:grid-cols-2 gap-16 items-center">
 
           <div>
 
@@ -64,33 +64,22 @@ export default function LandingPage() {
             </div>
 
             <h1 className="text-5xl lg:text-6xl font-bold leading-tight mb-6">
-              GuideUp helps you
+              Practice Real Technical
               <span className="block bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">
-                practice real technical interviews
+                Interviews Before Your
               </span>
-              before they matter
+              Placements Begin
             </h1>
 
             <p className="text-lg text-gray-600 mb-8 max-w-xl">
-              GuideUp helps students experience real technical interviews
-              with engineers and domain experts — so placements feel familiar,
-              not frightening.
+              Practice real interviews with engineers and build the confidence to crack placements.
             </p>
 
             <div className="flex gap-4 flex-wrap">
 
               <button
                 onClick={goToSessions}
-                className="
-  flex items-center gap-2
-  px-8 py-4
-  rounded-xl
-  font-semibold
-  text-white
-  bg-orange-500
-  shadow-lg
-  animate-ctaGlow
-  "
+                className="flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white bg-orange-500 shadow-lg animate-ctaGlow"
               >
                 Book Mock Interview
                 <ArrowRight className="w-5 h-5" />
@@ -135,11 +124,11 @@ export default function LandingPage() {
         </div>
       </section>
       <div className="sr-only">
-  GuideUp is a platform where students practice real technical mock interviews 
-  with experienced engineers. GuideUp helps students prepare for software 
-  engineering placements, internships, and coding interviews through realistic 
-  interview simulations and detailed feedback.
-</div>
+        GuideUp is a platform where students practice real technical mock interviews
+        with experienced engineers. GuideUp helps students prepare for software
+        engineering placements, internships, and coding interviews through realistic
+        interview simulations and detailed feedback.
+      </div>
 
 
       {/* STORY TIMELINE */}
@@ -161,15 +150,15 @@ export default function LandingPage() {
 
           {[
             {
-              title: "First Interview",
+              title: "First Interview Shock",
               text: "Confusion about format, expectations, and question depth."
             },
             {
-              title: "Second Interview",
+              title: "Second Interview Realization",
               text: "Realizing the level of preparation required."
             },
             {
-              title: "Third Interview",
+              title: "Third Interview Confidence",
               text: "Finally understanding how interviews actually work."
             }
           ].map((step, i) => (
@@ -322,7 +311,7 @@ export default function LandingPage() {
 
               <ul className="space-y-2 text-gray-600 text-sm">
 
-                <li>₹2-20K programs</li>
+                <li>₹2K-20K programs</li>
                 <li>Long commitments</li>
                 <li>Often theoretical</li>
 
