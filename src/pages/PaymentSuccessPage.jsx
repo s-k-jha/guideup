@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom"
+import { useEffect } from "react"
 import {
   CheckCircle2,
   Calendar,
@@ -14,6 +15,12 @@ import PageWrapper from "../components/PageWrapper"
 
 export default function PaymentSuccessPage() {
   const navigate = useNavigate()
+  if (window.gtag) {
+    window.gtag('event', 'payment_success', {
+      value: booking.session?.price || 0,
+      currency: 'INR'
+    });
+  }
   const { booking, resetBooking } = useBooking()
 
   const handleNewBooking = () => {
