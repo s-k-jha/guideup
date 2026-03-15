@@ -311,7 +311,7 @@ export default function LandingPage() {
 
               <ul className="space-y-2 text-gray-600 text-sm">
 
-                <li>₹2-20K programs</li>
+                <li>₹2K-20K programs</li>
                 <li>Long commitments</li>
                 <li>Often theoretical</li>
 
