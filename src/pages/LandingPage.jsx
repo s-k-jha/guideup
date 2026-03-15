@@ -447,7 +447,7 @@ export default function LandingPage() {
               <div className="flex flex-col gap-3 text-gray-600">
 
                 <div>
-                  connect.azsolutions@gmail.com
+                  support@guideup.in
                 </div>
 
                 <div>

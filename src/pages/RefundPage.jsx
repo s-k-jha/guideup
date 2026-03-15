@@ -25,7 +25,7 @@ export default function RefundPage() {
 
       <h2 className="text-xl font-semibold mt-8 mb-3">Contact for Refund Requests</h2>
       <p className="text-gray-600">
-        For refund requests, please contact connect.azsolutions@gmail.com
+        For refund requests, please contact support@guideup.in
       </p>
 
       <p className="text-gray-500 text-sm mt-10">
