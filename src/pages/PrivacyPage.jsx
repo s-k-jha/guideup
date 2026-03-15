@@ -30,7 +30,7 @@ export default function PrivacyPage() {
 
       <h2 className="text-xl font-semibold mt-8 mb-3">Contact</h2>
       <p className="text-gray-600">
-        If you have questions about this privacy policy, please contact us at connect.azsolutions@gmail.com
+        If you have questions about this privacy policy, please contact us at support@guideup.in
       </p>
 
       <p className="text-gray-500 text-sm mt-10">
