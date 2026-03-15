@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 import {
   Rocket,
   Users,
@@ -13,6 +14,15 @@ import {
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  useEffect(() => {
+
+    if (window.gtag) {
+      window.gtag('event', 'landing_view', {
+        page: 'landing'
+      });
+    }
+
+  }, []);
   const goToSessions = () => navigate("/sessions");
 
   return (

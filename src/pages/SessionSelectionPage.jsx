@@ -134,6 +134,10 @@ export default function SessionSelectionPage() {
       .then(setSessions)
       .catch(() => setError('Failed to load sessions. Please try again.'))
       .finally(() => setLoading(false))
+
+       if (window.gtag) {
+    window.gtag('event', 'view_sessions')
+  }
   }, [])
 
   const handleContinue = () => {
