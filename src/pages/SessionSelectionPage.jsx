@@ -1,126 +1,17 @@
-// import { useEffect, useState } from 'react'
-// import { useNavigate } from 'react-router-dom'
-// import { ArrowLeft, Info } from 'lucide-react'
-// import { getSessions } from '../api/sessions'
-// import { useBooking } from '../context/BookingContext'
-// import SessionCard from '../components/SessionCard'
-// import PrimaryButton from '../components/PrimaryButton'
-// import StepIndicator from '../components/StepIndicator'
-// import PageWrapper from '../components/PageWrapper'
-
-// export default function SessionSelectionPage() {
-//   const navigate = useNavigate()
-//   const { booking, updateBooking } = useBooking()
-//   const [sessions, setSessions] = useState([])
-//   const [loading, setLoading] = useState(true)
-//   const [error, setError] = useState('')
-//   const [selected, setSelected] = useState(booking.session)
-
-//   useEffect(() => {
-//     getSessions()
-//       .then(setSessions)
-//       .catch(() => setError('Failed to load sessions. Please try again.'))
-//       .finally(() => setLoading(false))
-//   }, [])
-
-//   const handleContinue = () => {
-//     if (!selected) return
-//     updateBooking({ session: selected })
-//     navigate('/schedule')
-//   }
-
-//   return (
-//     <PageWrapper>
-//       <div className="px-4 pt-4 pb-8">
-
-//         {/* Header */}
-//         <div className="flex items-center gap-3 mb-2">
-//           <button
-//             onClick={() => navigate('/')}
-//             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-//           >
-//             <ArrowLeft className="w-5 h-5 text-gray-600" />
-//           </button>
-
-//           <h1 className="font-bold text-xl text-gray-900">
-//             Choose Session
-//           </h1>
-//         </div>
-
-//         <StepIndicator current={1} />
-
-//         <p className="text-gray-500 text-sm mb-6 text-center">
-//           Select the type of mentorship session that fits your needs.
-//         </p>
-
-//         {/* Skeleton Loading */}
-//         {loading && (
-//           <div className="space-y-3 mb-8">
-//             {[...Array(6)].map((_, i) => (
-//               <div
-//                 key={i}
-//                 className="animate-pulse border rounded-xl p-4 bg-white"
-//               >
-//                 <div className="h-4 bg-gray-200 rounded w-2/3 mb-3"></div>
-//                 <div className="h-3 bg-gray-200 rounded w-1/3 mb-4"></div>
-//                 <div className="h-4 bg-gray-200 rounded w-1/5"></div>
-//               </div>
-//             ))}
-//           </div>
-//         )}
-
-//         {error && (
-//           <div className="flex items-start gap-2 bg-red-50 border border-red-100 rounded-xl p-4 text-red-600 text-sm">
-//             <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
-//             {error}
-//           </div>
-//         )}
-
-//         {!loading && !error && (
-//           <div className="space-y-3 mb-8">
-//             {sessions.map(session => (
-//               <SessionCard
-//                 key={session._id}
-//                 session={session}
-//                 selected={selected?._id === session._id}
-//                 onSelect={setSelected}
-//               />
-//             ))}
-//           </div>
-//         )}
-
-//         <div className="bg-primary-50 border border-primary-100 rounded-xl p-4 mb-6 text-sm text-primary-700 flex gap-2">
-//           <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
-//           <span>
-//             A mentor will be assigned after booking confirmation.
-//             All sessions are 1:1 and confidential.
-//           </span>
-//         </div>
-
-//         <PrimaryButton
-//           onClick={handleContinue}
-//           disabled={!selected}
-//           className={!selected ? 'opacity-50' : ''}
-//         >
-//           Continue
-//         </PrimaryButton>
-
-//       </div>
-//     </PageWrapper>
-//   )
-// }
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Info } from 'lucide-react'
 import { getSessions } from '../api/sessions'
 import { useBooking } from '../context/BookingContext'
+import Seo from '../lib/seo'
 import SessionCard from '../components/SessionCard'
-import PrimaryButton from '../components/PrimaryButton'
 import StepIndicator from '../components/StepIndicator'
 import PageWrapper from '../components/PageWrapper'
+import Button from '../components/ui/Button'
+import { SkeletonCard } from '../components/ui/Skeleton'
+import { ErrorState } from '../components/ui/States'
 
 export default function SessionSelectionPage() {
-
   const navigate = useNavigate()
   const { booking, updateBooking } = useBooking()
 
@@ -129,15 +20,18 @@ export default function SessionSelectionPage() {
   const [error, setError] = useState('')
   const [selected, setSelected] = useState(booking.session)
 
-  useEffect(() => {
+  const load = () => {
+    setLoading(true)
+    setError('')
     getSessions()
       .then(setSessions)
       .catch(() => setError('Failed to load sessions. Please try again.'))
       .finally(() => setLoading(false))
-
-       if (window.gtag) {
-    window.gtag('event', 'view_sessions')
   }
+
+  useEffect(() => {
+    load()
+    if (window.gtag) window.gtag('event', 'view_sessions')
   }, [])
 
   const handleContinue = () => {
@@ -147,98 +41,76 @@ export default function SessionSelectionPage() {
   }
 
   return (
-    <PageWrapper>
-      <div className="px-4 pt-4 pb-8">
-
-        {/* Header */}
-        <div className="flex items-center gap-3 mb-2">
-          <button
-            onClick={() => navigate('/')}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5 text-gray-600" />
-          </button>
-
-          <h1 className="font-bold text-xl text-gray-900">
-            Choose Session
-          </h1>
-        </div>
-
-        <StepIndicator current={1} />
-
-        <p className="text-gray-500 text-sm mb-6 text-center">
-          Spend ₹99 now, earn ₹9L later!
-        </p>
-
-        {/* Skeleton Loading */}
-        {loading && (
-          <div className="space-y-3 mb-8">
-            {[...Array(6)].map((_, i) => (
-              <div
-                key={i}
-                className="animate-pulse border rounded-xl p-4 bg-white"
-              >
-                <div className="h-4 bg-gray-200 rounded w-2/3 mb-3"></div>
-                <div className="h-3 bg-gray-200 rounded w-1/3 mb-4"></div>
-                <div className="h-4 bg-gray-200 rounded w-1/5"></div>
-              </div>
-            ))}
+    <>
+      <Seo title="Choose a Mock Interview Session" path="/sessions" noindex />
+      <PageWrapper>
+        <div className="px-4 pt-4 pb-28 sm:pb-8">
+          <div className="flex items-center gap-3 mb-2">
+            <button onClick={() => navigate('/')} className="p-2 -ml-2 hover:bg-secondary rounded-lg transition-colors" aria-label="Back">
+              <ArrowLeft className="w-5 h-5 text-foreground/70" />
+            </button>
+            <h1 className="font-display font-bold text-xl text-foreground">Choose Session</h1>
           </div>
-        )}
 
-        {/* Error */}
-        {error && (
-          <div className="flex items-start gap-2 bg-red-50 border border-red-100 rounded-xl p-4 text-red-600 text-sm">
-            <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
-            {error}
-          </div>
-        )}
+          <StepIndicator current={1} />
 
-        {/* Sessions */}
-        {!loading && !error && (
-          <div className="space-y-6 mb-8">
-            {sessions.map(session => {
+          <p className="text-muted-foreground text-sm mb-6 text-center">
+            Pick the round you want to practice — a mentor is assigned after booking.
+          </p>
 
-              // per minute price calculation
-              // const pricePerMinute = Math.round(
-              //   session.price / session.durationMinutes
-              // )
-              const pricePerMinute = session.price / session.durationMinutes;
+          {loading && (
+            <div className="space-y-3 mb-8">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <SkeletonCard key={i} />
+              ))}
+            </div>
+          )}
 
-              return (
+          {!loading && error && <ErrorState description={error} onRetry={load} className="mb-8" />}
+
+          {!loading && !error && sessions.length === 0 && (
+            <ErrorState
+              title="No sessions available right now"
+              description="Please check back shortly — we're updating our session lineup."
+              className="mb-8"
+            />
+          )}
+
+          {!loading && !error && sessions.length > 0 && (
+            <div className="space-y-3 mb-8">
+              {sessions.map((session) => (
                 <SessionCard
                   key={session._id}
                   session={session}
-                  pricePerMinute={pricePerMinute}
+                  pricePerMinute={session.price / session.durationMinutes}
                   selected={selected?._id === session._id}
                   onSelect={setSelected}
-                  onClick={handleContinue}
                 />
-              )
+              ))}
+            </div>
+          )}
 
-            })}
+          <div className="bg-primary-50 border border-primary-100 rounded-xl p-4 mb-6 text-sm text-primary-800 flex gap-2.5">
+            <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
+            <span>A mentor will be assigned after booking confirmation. All sessions are 1:1 and confidential.</span>
           </div>
-        )}
 
-        {/* Info Box */}
-        <div className="bg-primary-50 border border-primary-100 rounded-xl p-4 mb-6 text-sm text-primary-700 flex gap-2">
-          <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
-          <span>
-            A mentor will be assigned after booking confirmation.
-            All sessions are 1:1 and confidential.
-          </span>
+          <div className="hidden sm:block">
+            <Button onClick={handleContinue} disabled={!selected} className="w-full h-12">
+              Continue
+            </Button>
+          </div>
         </div>
 
-        {/* Continue Button */}
-        <PrimaryButton
-          onClick={handleContinue}
-          disabled={!selected}
-          className={!selected ? 'opacity-50' : ''}
-        >
-          Continue
-        </PrimaryButton>
-
-      </div>
-    </PageWrapper>
+        {/* Mobile sticky CTA */}
+        <div className="sm:hidden fixed bottom-0 inset-x-0 bg-card border-t border-border p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+          <div className="max-w-lg mx-auto">
+            <Button onClick={handleContinue} disabled={!selected} className="w-full h-12">
+              {selected ? `Continue with ${selected.title}` : 'Select a session to continue'}
+            </Button>
+          </div>
+        </div>
+      </PageWrapper>
+    </>
   )
 }

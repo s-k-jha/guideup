@@ -1,14 +1,15 @@
 import axios from "axios"
 
 const api = axios.create({
-  // baseURL: "http://localhost:5000/api"
-  // production ke time
-  baseURL: "https://guideup-api.onrender.com/api"
+  baseURL: import.meta.env.VITE_API_URL || "https://guideup-api.onrender.com/api"
 })
 
 api.interceptors.request.use((config) => {
 
-  const token = localStorage.getItem("admin_token")
+  const isAdminRoute = config.url?.includes("/admin")
+  const token = isAdminRoute
+    ? localStorage.getItem("admin_token")
+    : localStorage.getItem("user_token") || localStorage.getItem("admin_token")
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`

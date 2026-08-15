@@ -1,257 +1,152 @@
-import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, UserCheck, Calendar, Clock, Loader2 } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+import { Search, UserCheck, Loader2 } from 'lucide-react'
 import { getBookings, assignMentor, getMentors } from '../../api/admin'
-import LoadingSpinner from '../../components/LoadingSpinner'
+import { useToast } from '../../hooks/use-toast'
+import Seo from '../../lib/seo'
+import AdminLayout from '../../components/layout/AdminLayout'
+import Input from '../../components/ui/Input'
+import Badge from '../../components/ui/Badge'
+import Button from '../../components/ui/Button'
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../../components/ui/Table'
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '../../components/ui/Select'
+import { Tabs, TabsList, TabsTrigger } from '../../components/ui/Tabs'
+import { Skeleton } from '../../components/ui/Skeleton'
+import { EmptyState } from '../../components/ui/States'
 
 export default function AdminBookings() {
-
-  const navigate = useNavigate()
-
+  const { toast } = useToast()
   const [bookings, setBookings] = useState([])
   const [mentors, setMentors] = useState([])
   const [loading, setLoading] = useState(true)
-
-  const [assignState, setAssignState] = useState({})
+  const [search, setSearch] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [pendingAssign, setPendingAssign] = useState({})
+  const [assigning, setAssigning] = useState({})
 
   useEffect(() => {
-
     const fetchData = async () => {
-
       try {
-
         const bookingsRes = await getBookings()
         setBookings(bookingsRes.data.bookings || [])
-
         const mentorsRes = await getMentors()
         setMentors(mentorsRes.data.mentors || [])
-
       } catch (err) {
-
         console.error(err)
-
       } finally {
-
         setLoading(false)
-
       }
-
     }
-
     fetchData()
-
   }, [])
 
-
   const handleAssign = async (bookingId) => {
-
-    const mentorId = assignState[bookingId]?.input || ''
-
+    const mentorId = pendingAssign[bookingId]
     if (!mentorId) return
-
-    setAssignState(s => ({
-      ...s,
-      [bookingId]: { ...s[bookingId], loading: true }
-    }))
-
+    setAssigning((s) => ({ ...s, [bookingId]: true }))
     try {
-
       await assignMentor(bookingId, mentorId)
-
-      setBookings(prev =>
-        prev.map(b =>
-          b._id === bookingId
-            ? { ...b, mentorId }
-            : b
-        )
-      )
-
-      setAssignState(s => ({
-        ...s,
-        [bookingId]: { input: '', loading: false }
-      }))
-
+      setBookings((prev) => prev.map((b) => (b._id === bookingId ? { ...b, mentorId } : b)))
+      toast({ title: 'Mentor assigned', variant: 'success' })
     } catch {
-
-      setAssignState(s => ({
-        ...s,
-        [bookingId]: { ...s[bookingId], loading: false }
-      }))
-
+      toast({ title: 'Could not assign mentor', variant: 'destructive' })
     }
-
+    setAssigning((s) => ({ ...s, [bookingId]: false }))
   }
 
+  const filtered = useMemo(() => {
+    return bookings.filter((b) => {
+      if (statusFilter === 'assigned' && !b.mentorId) return false
+      if (statusFilter === 'pending' && b.mentorId) return false
+      if (search) {
+        const q = search.toLowerCase()
+        const haystack = `${b.userId?.name || ''} ${b.userId?.email || ''} ${b.sessionId?.title || ''}`.toLowerCase()
+        if (!haystack.includes(q)) return false
+      }
+      return true
+    })
+  }, [bookings, search, statusFilter])
 
   return (
-
-    <div className="min-h-screen bg-gray-50">
-
-      <div className="max-w-lg mx-auto px-4 py-6">
-
-        <div className="flex items-center gap-3 mb-6">
-
-          <button
-            onClick={() => navigate('/admin')}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-5 h-5 text-gray-600" />
-          </button>
-
-          <h1 className="font-bold text-xl text-gray-900">
-            Bookings
-          </h1>
-
+    <>
+      <Seo title="Manage Bookings" path="/admin/bookings" noindex />
+      <AdminLayout title="Bookings">
+        <div className="flex flex-col sm:flex-row gap-3 mb-5">
+          <Input icon={Search} placeholder="Search by student, email, or session…" value={search} onChange={(e) => setSearch(e.target.value)} className="sm:max-w-xs" />
+          <Tabs value={statusFilter} onValueChange={setStatusFilter}>
+            <TabsList>
+              <TabsTrigger value="all">All</TabsTrigger>
+              <TabsTrigger value="pending">Pending</TabsTrigger>
+              <TabsTrigger value="assigned">Assigned</TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
 
-
-        {loading && <LoadingSpinner />}
-
-
-        {!loading && bookings.length === 0 && (
-          <div className="text-center py-16 text-gray-400">
-            No bookings yet.
+        {loading && (
+          <div className="space-y-2">
+            {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-14" />)}
           </div>
         )}
 
+        {!loading && filtered.length === 0 && (
+          <EmptyState title="No bookings found" description="Try a different search or filter." />
+        )}
 
-        <div className="space-y-4">
-
-          {bookings.map(b => (
-
-            <div
-              key={b._id}
-              className="bg-white border border-gray-100 rounded-2xl p-5 shadow-card space-y-4"
-            >
-
-              {/* Student Info */}
-
-              <div className="flex justify-between items-start">
-
-                <div>
-
-                  <div className="font-semibold text-gray-900">
-                    {b.userId?.name}
-                  </div>
-
-                  <div className="text-xs text-gray-500">
-                    {b.userId?.email}
-                  </div>
-
-                  <div className="text-xs text-gray-400">
-                    {b.userId?.phone}
-                  </div>
-
-                </div>
-
-
-                <span
-                  className={`text-xs font-semibold px-2 py-1 rounded-full
-                    ${b.mentorId
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-yellow-100 text-yellow-700'
-                    }
-                  `}
-                >
-                  {b.mentorId ? 'Assigned' : 'Pending'}
-                </span>
-
-              </div>
-
-
-              {/* Session Info */}
-
-              <div className="text-sm font-medium text-gray-800">
-                {b.sessionId?.title}
-              </div>
-
-
-              <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
-
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-primary-400" />
-                  {b.date}
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-primary-400" />
-                  {b.startTime} - {b.endTime}
-                </div>
-
-                <div>
-                  Duration: {b.sessionId?.durationMinutes} min
-                </div>
-
-                <div>
-                  Paid: ₹{b.amountPaid}
-                </div>
-
-              </div>
-
-
-              {/* Mentor Assign */}
-
-              {!b.mentorId && (
-
-                <div className="flex gap-2">
-
-                  <select
-                    value={assignState[b._id]?.input || ''}
-                    onChange={e =>
-                      setAssignState(s => ({
-                        ...s,
-                        [b._id]: {
-                          ...s[b._id],
-                          input: e.target.value
-                        }
-                      }))
-                    }
-                    className="flex-1 h-10 px-3 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-primary-400"
-                  >
-
-                    <option value="">
-                      Select mentor
-                    </option>
-
-                    {mentors.map(m => (
-                      <option key={m._id} value={m._id}>
-                        {m.name}
-                      </option>
-                    ))}
-
-                  </select>
-
-
-                  <button
-                    onClick={() => handleAssign(b._id)}
-                    disabled={assignState[b._id]?.loading}
-                    className="h-10 px-4 bg-primary-500 text-white rounded-lg text-sm font-semibold hover:bg-primary-600 disabled:opacity-50 transition flex items-center gap-1.5"
-                  >
-
-                    {assignState[b._id]?.loading
-                      ? <Loader2 className="w-4 h-4 animate-spin" />
-                      : <>
-                          <UserCheck className="w-4 h-4" />
-                          Assign
-                        </>
-                    }
-
-                  </button>
-
-                </div>
-
-              )}
-
-            </div>
-
-          ))}
-
-        </div>
-
-      </div>
-
-    </div>
-
+        {!loading && filtered.length > 0 && (
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Student</TableHead>
+                <TableHead>Session</TableHead>
+                <TableHead>Date &amp; Time</TableHead>
+                <TableHead>Amount</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Mentor</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filtered.map((b) => (
+                <TableRow key={b._id}>
+                  <TableCell>
+                    <div className="font-medium text-foreground text-sm">{b.userId?.name}</div>
+                    <div className="text-xs text-muted-foreground">{b.userId?.email}</div>
+                  </TableCell>
+                  <TableCell className="text-sm">{b.sessionId?.title}</TableCell>
+                  <TableCell className="text-sm whitespace-nowrap">
+                    {b.date} <span className="text-muted-foreground">· {b.startTime}</span>
+                  </TableCell>
+                  <TableCell className="text-sm font-medium">₹{b.amountPaid}</TableCell>
+                  <TableCell>
+                    <Badge variant={b.mentorId ? 'success' : 'warning'}>{b.mentorId ? 'Assigned' : 'Pending'}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    {b.mentorId ? (
+                      <span className="text-sm text-muted-foreground">
+                        {mentors.find((m) => m._id === b.mentorId)?.name || '—'}
+                      </span>
+                    ) : (
+                      <div className="flex items-center gap-2 min-w-[180px]">
+                        <Select value={pendingAssign[b._id] || ''} onValueChange={(v) => setPendingAssign((s) => ({ ...s, [b._id]: v }))}>
+                          <SelectTrigger className="h-9 text-xs">
+                            <SelectValue placeholder="Select mentor" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {mentors.map((m) => (
+                              <SelectItem key={m._id} value={m._id}>{m.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Button size="sm" variant="secondary" onClick={() => handleAssign(b._id)} disabled={!pendingAssign[b._id] || assigning[b._id]}>
+                          {assigning[b._id] ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <UserCheck className="w-3.5 h-3.5" />}
+                        </Button>
+                      </div>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+      </AdminLayout>
+    </>
   )
-
 }
