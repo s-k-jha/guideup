@@ -4,9 +4,19 @@ import { Avatar, AvatarFallback, AvatarImage } from '../ui/Avatar'
 import Badge from '../ui/Badge'
 import Button from '../ui/Button'
 
-export default function TalkMentorCard({ mentor, onConnect, connecting }) {
+export default function TalkMentorCard({ mentor, pricing, onConnect, connecting }) {
   const hasFirstFree = mentor.offers?.firstFree
   const hasDiscount = mentor.offers?.secondDiscount
+
+  // `pricing` is this specific student's real tier with this mentor (fetched
+  // only once signed in). Until we know that, fall back to the mentor's
+  // general offer flags as a marketing default — a signed-out visitor or a
+  // brand-new student is assumed to be eligible for the first-free offer.
+  const tier = pricing?.tier ?? (hasFirstFree ? 'free' : hasDiscount ? 'discount' : 'paid')
+  const isFree = tier === 'free'
+  const isDiscount = tier === 'discount'
+  const isPaid = tier === 'paid'
+  const displayPrice = pricing?.effectivePrice ?? (isDiscount ? mentor.discountPrice : mentor.chatPrice)
 
   return (
     <Card className="p-5 flex flex-col h-full">
@@ -40,24 +50,20 @@ export default function TalkMentorCard({ mentor, onConnect, connecting }) {
       )}
 
       <div className="mt-auto pt-3 border-t border-border">
-        {hasFirstFree && (
+        {(isFree || isDiscount) && (
           <div className="flex items-center gap-1 text-[11px] font-semibold text-success mb-2">
-            <Sparkles className="w-3 h-3" /> First chat FREE
+            <Sparkles className="w-3 h-3" /> {isFree ? 'Your chat is free' : 'Your chat is ₹' + displayPrice}
           </div>
         )}
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-baseline gap-1.5">
-            {(hasFirstFree || hasDiscount) && (
+            {!isPaid && (
               <span className="text-xs text-muted-foreground line-through flex items-center">
                 <IndianRupee className="w-3 h-3" />{mentor.chatPrice}
               </span>
             )}
             <span className="text-sm font-bold text-foreground flex items-center">
-              {hasFirstFree ? 'FREE' : hasDiscount ? (
-                <><IndianRupee className="w-3.5 h-3.5" />{mentor.discountPrice}</>
-              ) : (
-                <><IndianRupee className="w-3.5 h-3.5" />{mentor.chatPrice}</>
-              )}
+              {isFree ? 'FREE' : <><IndianRupee className="w-3.5 h-3.5" />{displayPrice}</>}
             </span>
             <span className="text-[11px] text-muted-foreground">/ 2 min</span>
           </div>
