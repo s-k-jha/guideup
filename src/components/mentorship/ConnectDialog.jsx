@@ -170,6 +170,7 @@ export default function ConnectDialog({ mentor, open, onOpenChange }) {
         open={rechargeOpen}
         onOpenChange={setRechargeOpen}
         suggestedAmount={rechargeInfo?.min5MinAmount}
+        minAmount={rechargeInfo?.min5MinAmount}
         context={
           rechargeInfo
             ? `You need at least ₹${rechargeInfo.min5MinAmount} (5 min of talk time) to start this chat. Your wallet has ₹${rechargeInfo.walletBalance}.`

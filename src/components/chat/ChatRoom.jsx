@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Send, CheckCircle2, Clock } from 'lucide-react'
+import { ArrowLeft, Send, CheckCircle2, Clock, Loader2 } from 'lucide-react'
 import { getSocket, disconnectSocket } from '../../lib/socket'
+import { useToast } from '../../hooks/use-toast'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/Avatar'
 import Button from '../ui/Button'
 import { LoadingState, ErrorState } from '../ui/States'
@@ -22,19 +23,34 @@ function formatCountdown(seconds) {
  * Shared real-time chat UI for both the student and mentor side. The caller
  * supplies the role-appropriate token + REST fetchers; this component owns
  * the socket connection, message list, and send flow.
+ *
+ * The 2-minute timer is server-authoritative (see socketService.js): it only
+ * starts once BOTH participants have joined the room, so whoever arrives
+ * first waits without burning down the clock, and it can't be skipped by a
+ * disconnect. `onEnded` fires once, with the last known order, when the chat
+ * transitions to ended — the student page uses it to offer a wallet top-up.
  */
-export default function ChatRoom({ chatOrderId, token, role, fetchOrder, fetchMessages, backHref, otherPartyLabel }) {
+export default function ChatRoom({ chatOrderId, token, role, fetchOrder, fetchMessages, backHref, otherPartyLabel, onEnded }) {
+  const { toast } = useToast()
   const [order, setOrder] = useState(null)
   const [messages, setMessages] = useState([])
   const [loading, setLoading] = useState(true)
   const [authError, setAuthError] = useState('')
   const [joined, setJoined] = useState(false)
+  const [endsAt, setEndsAt] = useState(null)
   const [ended, setEnded] = useState(false)
   const [input, setInput] = useState('')
   const [sending, setSending] = useState(false)
   const [secondsLeft, setSecondsLeft] = useState(CHAT_SECONDS)
   const scrollRef = useRef(null)
-  const timerRef = useRef(null)
+  const orderRef = useRef(null)
+
+  useEffect(() => {
+    orderRef.current = order
+  }, [order])
+
+  const chatActive = !!endsAt && !ended
+  const waitingLabel = role === 'user' ? 'your mentor' : 'the student'
 
   useEffect(() => {
     let cancelled = false
@@ -48,12 +64,34 @@ export default function ChatRoom({ chatOrderId, token, role, fetchOrder, fetchMe
       })
       .catch(() => !cancelled && setAuthError('Could not load this chat. You may not have access to it.'))
       .finally(() => !cancelled && setLoading(false))
-    return () => { cancelled = true }
+    return () => {
+      cancelled = true
+    }
   }, [chatOrderId])
 
   useEffect(() => {
     if (!token || authError) return
     const socket = getSocket(token)
+
+    const onMessage = (msg) => {
+      setMessages((prev) => (prev.some((m) => m._id === msg._id) ? prev : [...prev, msg]))
+    }
+
+    const onPartnerJoined = ({ endsAt: newEndsAt } = {}) => {
+      const partnerName =
+        role === 'user' ? orderRef.current?.mentorId?.name : orderRef.current?.userId?.name
+      toast({
+        title: `${partnerName || (role === 'user' ? 'Your mentor' : 'The student')} joined the chat`,
+        variant: 'success',
+      })
+      if (newEndsAt) setEndsAt(newEndsAt)
+    }
+
+    const onChatEnded = () => setEnded(true)
+
+    socket.on('chat:message', onMessage)
+    socket.on('chat:partnerJoined', onPartnerJoined)
+    socket.on('chat:ended', onChatEnded)
 
     socket.emit('chat:join', { chatOrderId }, (ack) => {
       if (ack?.error) {
@@ -61,27 +99,39 @@ export default function ChatRoom({ chatOrderId, token, role, fetchOrder, fetchMe
         return
       }
       setJoined(true)
-      timerRef.current = setInterval(() => {
-        setSecondsLeft((s) => (s > 0 ? s - 1 : 0))
-      }, 1000)
+      if (ack?.ended) {
+        setEnded(true)
+        return
+      }
+      if (ack?.endsAt) setEndsAt(ack.endsAt)
     })
-
-    const onMessage = (msg) => {
-      setMessages((prev) => (prev.some((m) => m._id === msg._id) ? prev : [...prev, msg]))
-    }
-    const onEnded = () => setEnded(true)
-
-    socket.on('chat:message', onMessage)
-    socket.on('chat:ended', onEnded)
 
     return () => {
       socket.off('chat:message', onMessage)
-      socket.off('chat:ended', onEnded)
-      if (timerRef.current) clearInterval(timerRef.current)
+      socket.off('chat:partnerJoined', onPartnerJoined)
+      socket.off('chat:ended', onChatEnded)
+      disconnectSocket()
     }
   }, [chatOrderId, token, authError])
 
-  useEffect(() => () => disconnectSocket(), [])
+  // Countdown is derived from the server's endsAt on every tick rather than
+  // a locally-armed decrement, so it can't drift and stays paused (no badge
+  // shown at all) until endsAt exists — i.e. until both sides have joined.
+  useEffect(() => {
+    if (!endsAt || ended) return
+    const tick = () => {
+      const remaining = Math.max(0, Math.round((endsAt - Date.now()) / 1000))
+      setSecondsLeft(remaining)
+      if (remaining <= 0) setEnded(true)
+    }
+    tick()
+    const interval = setInterval(tick, 1000)
+    return () => clearInterval(interval)
+  }, [endsAt, ended])
+
+  useEffect(() => {
+    if (ended) onEnded?.(orderRef.current)
+  }, [ended])
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
@@ -89,7 +139,11 @@ export default function ChatRoom({ chatOrderId, token, role, fetchOrder, fetchMe
 
   const handleSend = () => {
     const text = input.trim()
-    if (!text || ended || sending) return
+    if (!text || sending || ended) return
+    if (!chatActive) {
+      toast({ title: `Please wait — ${waitingLabel} hasn't joined yet`, variant: 'destructive' })
+      return
+    }
     setSending(true)
     const socket = getSocket(token)
     socket.emit('chat:message', { chatOrderId, text }, (ack) => {
@@ -131,10 +185,10 @@ export default function ChatRoom({ chatOrderId, token, role, fetchOrder, fetchMe
           <div className="min-w-0 flex-1">
             <div className="text-sm font-semibold text-foreground truncate">{otherName || otherPartyLabel}</div>
             <div className="text-xs text-muted-foreground">
-              {ended ? 'Chat ended' : joined ? 'Connected' : 'Connecting…'}
+              {ended ? 'Chat ended' : chatActive ? 'Connected' : joined ? `Waiting for ${waitingLabel}…` : 'Connecting…'}
             </div>
           </div>
-          {!ended && joined && (
+          {chatActive && (
             <span className="flex items-center gap-1 text-xs font-medium text-primary-600 bg-primary-50 px-2.5 py-1 rounded-full shrink-0">
               <Clock className="w-3 h-3" /> {formatCountdown(secondsLeft)}
             </span>
@@ -143,10 +197,14 @@ export default function ChatRoom({ chatOrderId, token, role, fetchOrder, fetchMe
       </header>
 
       <div ref={scrollRef} className="flex-1 overflow-y-auto max-w-2xl w-full mx-auto px-4 py-6 space-y-3">
-        {messages.length === 0 && (
-          <div className="text-center text-sm text-muted-foreground py-10">
-            Say hi to start the conversation.
+        {joined && !endsAt && !ended && (
+          <div className="text-center text-sm text-muted-foreground py-10 flex flex-col items-center gap-2">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Waiting for {waitingLabel} to join…
           </div>
+        )}
+        {(chatActive || ended) && messages.length === 0 && (
+          <div className="text-center text-sm text-muted-foreground py-10">Say hi to start the conversation.</div>
         )}
         {messages.map((m) => {
           const isMine = m.senderRole === role
@@ -186,12 +244,11 @@ export default function ChatRoom({ chatOrderId, token, role, fetchOrder, fetchMe
                     handleSend()
                   }
                 }}
-                placeholder={joined ? 'Type a message…' : 'Connecting…'}
-                disabled={!joined}
+                placeholder={chatActive ? 'Type a message…' : joined ? `Waiting for ${waitingLabel}…` : 'Connecting…'}
                 rows={1}
                 className="flex-1 resize-none rounded-lg border border-input bg-background px-3.5 py-2.5 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:opacity-60 max-h-28"
               />
-              <Button size="icon" onClick={handleSend} disabled={!joined || !input.trim()} loading={sending} aria-label="Send">
+              <Button size="icon" onClick={handleSend} disabled={!chatActive || !input.trim()} loading={sending} aria-label="Send">
                 <Send className="w-4 h-4" />
               </Button>
             </div>

@@ -12,7 +12,7 @@ const QUICK_AMOUNTS = [49, 99, 199, 499]
  * shortfall needed for a specific mentor's 5-minute minimum), it's
  * pre-filled and explained; otherwise the user picks a free amount.
  */
-export default function WalletRechargeDialog({ open, onOpenChange, suggestedAmount, context, onSuccess }) {
+export default function WalletRechargeDialog({ open, onOpenChange, suggestedAmount, minAmount, context, onSuccess }) {
   const [amount, setAmount] = useState('')
   const [step, setStep] = useState('form')
   const [error, setError] = useState('')
@@ -81,8 +81,9 @@ export default function WalletRechargeDialog({ open, onOpenChange, suggestedAmou
 
   const handleRecharge = async () => {
     const amt = Number(amount)
-    if (!amt || amt < 10) {
-      setError('Enter at least ₹10')
+    const floor = minAmount && minAmount > 10 ? minAmount : 10
+    if (!amt || amt < floor) {
+      setError(`Enter at least ₹${floor}`)
       return
     }
     setError('')
