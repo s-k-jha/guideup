@@ -7,8 +7,12 @@ const api = axios.create({
 api.interceptors.request.use((config) => {
 
   const isAdminRoute = config.url?.includes("/admin")
+  const isMentorAuthRoute = config.url?.includes("/mentor-auth")
+
   const token = isAdminRoute
     ? localStorage.getItem("admin_token")
+    : isMentorAuthRoute
+    ? localStorage.getItem("mentor_token")
     : localStorage.getItem("user_token") || localStorage.getItem("admin_token")
 
   if (token) {

@@ -24,7 +24,7 @@ const EMPTY_FORM = {
   name: '', email: '', role: '', company: '', experienceYears: '', bio: '',
   photoUrl: '', linkedinUrl: '', domains: '', skills: '', isPubliclyListed: false, isActive: true,
   mentorType: 'interview_panel', chatPrice: 199, discountPrice: 5, dailyFreeQuota: 20,
-  offerFirstFree: true, offerSecondDiscount: true,
+  offerFirstFree: true, offerSecondDiscount: true, password: '',
 }
 
 export default function AdminMentors() {
@@ -59,12 +59,17 @@ export default function AdminMentors() {
       mentorType: m.mentorType || 'interview_panel',
       chatPrice: m.chatPrice ?? 199, discountPrice: m.discountPrice ?? 5, dailyFreeQuota: m.dailyFreeQuota ?? 20,
       offerFirstFree: m.offers?.firstFree !== false, offerSecondDiscount: m.offers?.secondDiscount !== false,
+      password: '',
     })
     setSheetOpen(true)
   }
 
   const handleSave = async () => {
     if (!form.name.trim() || !form.email.trim()) return
+    if (form.password && form.password.length < 8) {
+      toast({ title: 'Password must be at least 8 characters', variant: 'destructive' })
+      return
+    }
     setSaving(true)
     const payload = {
       ...form,
@@ -78,6 +83,7 @@ export default function AdminMentors() {
     }
     delete payload.offerFirstFree
     delete payload.offerSecondDiscount
+    if (!payload.password) delete payload.password
     try {
       if (editing) await updateMentorAdmin(editing._id, payload)
       else await createMentorAdmin(payload)
@@ -162,6 +168,11 @@ export default function AdminMentors() {
                       <div className="flex items-center gap-2">
                         <div className="font-semibold text-foreground text-sm truncate">{m.name}</div>
                         {m.isPubliclyListed && <Badge variant="success" size="sm">Public</Badge>}
+                        {m.mentorType === 'talk' && (
+                          <Badge variant={m.availabilityStatus === 1 ? 'success' : m.availabilityStatus === 2 ? 'warning' : 'secondary'} size="sm">
+                            {m.availabilityStatus === 1 ? 'Online' : m.availabilityStatus === 2 ? 'Busy' : 'Offline'}
+                          </Badge>
+                        )}
                       </div>
                       {(m.role || m.company) && (
                         <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
@@ -323,6 +334,18 @@ export default function AdminMentors() {
                     <Checkbox checked={form.offerSecondDiscount} onCheckedChange={(v) => setForm((f) => ({ ...f, offerSecondDiscount: !!v }))} />
                     <span className="text-sm text-foreground">Enable ₹{form.discountPrice || 5} second-chat offer</span>
                   </label>
+                  <div className="space-y-1.5 pt-2 border-t border-primary-100">
+                    <Label>{editing ? 'Reset Mentor Portal Password' : 'Set Mentor Portal Password'}</Label>
+                    <Input
+                      type="text"
+                      value={form.password}
+                      onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
+                      placeholder={editing ? 'Leave blank to keep current password' : 'At least 8 characters'}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Lets this mentor sign in at /mentor/login to edit their profile and toggle availability. Share it with them directly — there's no automated invite email.
+                    </p>
+                  </div>
                 </div>
               )}
 

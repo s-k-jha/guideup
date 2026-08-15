@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { MessageCircle, ShieldCheck } from 'lucide-react'
-import { getTalkMentors } from '../api/chatOrders'
+import { getTalkMentors, getChatPricing } from '../api/chatOrders'
+import { useAuth } from '../context/AuthContext'
 import { useAuthDialog } from '../context/AuthDialogContext'
 import Seo from '../lib/seo'
 import { Container, Section, SectionHeading } from '../components/layout/PageContainer'
@@ -13,18 +14,40 @@ import { EmptyState } from '../components/ui/States'
 const INITIAL_COUNT = 10
 
 export default function TalkToMentorPage() {
+  const { isAuthenticated } = useAuth()
   const { requireAuth } = useAuthDialog()
   const [mentors, setMentors] = useState([])
   const [loading, setLoading] = useState(true)
   const [showAll, setShowAll] = useState(false)
   const [selectedMentor, setSelectedMentor] = useState(null)
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [pricingMap, setPricingMap] = useState({})
 
   useEffect(() => {
     getTalkMentors().then(setMentors).catch(() => setMentors([])).finally(() => setLoading(false))
   }, [])
 
   const visibleMentors = showAll ? mentors : mentors.slice(0, INITIAL_COUNT)
+
+  // For signed-in users, fetch each visible mentor's real tier (first-free /
+  // second-discount / fully-paid) so the card shows the price that mentor
+  // will actually charge this student, not just a generic marketing default.
+  useEffect(() => {
+    if (!isAuthenticated) return
+    const toFetch = visibleMentors.filter((m) => !(m._id in pricingMap))
+    if (toFetch.length === 0) return
+
+    toFetch.forEach((mentor) => {
+      getChatPricing(mentor._id)
+        .then((data) => setPricingMap((prev) => ({ ...prev, [mentor._id]: data })))
+        .catch(() => {})
+    })
+  }, [isAuthenticated, visibleMentors, pricingMap])
+
+  // Signing out should drop stale per-user pricing so the next login refetches.
+  useEffect(() => {
+    if (!isAuthenticated) setPricingMap({})
+  }, [isAuthenticated])
 
   const handleConnect = (mentor) => {
     requireAuth(() => {
@@ -72,7 +95,12 @@ export default function TalkToMentorPage() {
             <>
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {visibleMentors.map((mentor) => (
-                  <TalkMentorCard key={mentor.slug} mentor={mentor} onConnect={handleConnect} />
+                  <TalkMentorCard
+                    key={mentor.slug}
+                    mentor={mentor}
+                    pricing={pricingMap[mentor._id]}
+                    onConnect={handleConnect}
+                  />
                 ))}
               </div>
 
