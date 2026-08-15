@@ -3,15 +3,17 @@ import { cn } from '../lib/utils'
 export default function SlotButton({ time, available, selected, onSelect }) {
   return (
     <button
+      type="button"
       disabled={!available}
+      aria-pressed={selected}
       onClick={() => available && onSelect(time)}
       className={cn(
-        'py-3 px-2 rounded-lg text-sm font-medium transition-all duration-150 border',
+        'py-2.5 px-2 rounded-lg text-sm font-medium transition-all duration-150 border',
         available && selected
-          ? 'bg-primary-500 text-white border-primary-500 shadow-sm'
+          ? 'bg-primary text-primary-foreground border-primary shadow-xs'
           : available
-          ? 'bg-white text-gray-800 border-gray-200 hover:border-primary-400 hover:text-primary-600 hover:bg-primary-50'
-          : 'bg-gray-50 text-gray-300 border-gray-100 cursor-not-allowed line-through'
+          ? 'bg-card text-foreground border-border hover:border-primary-400 hover:text-primary-600 hover:bg-primary-50'
+          : 'bg-secondary/50 text-muted-foreground/50 border-transparent cursor-not-allowed line-through'
       )}
     >
       {time}

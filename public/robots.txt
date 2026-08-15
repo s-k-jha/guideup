@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /checkout
+Disallow: /schedule
+Disallow: /success
+Disallow: /meeting
 
 Sitemap: https://guideup.in/sitemap.xml

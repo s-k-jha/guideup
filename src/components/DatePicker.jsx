@@ -25,21 +25,30 @@ export default function DatePicker({ selected, onSelect }) {
   for (let i = 0; i < firstDay; i++) cells.push(null)
   for (let d = 1; d <= daysInMonth; d++) cells.push(d)
 
+  const isPrevDisabled = view.getFullYear() === today.getFullYear() && view.getMonth() === today.getMonth()
+
   return (
-    <div className="bg-white rounded-xl border border-gray-100 shadow-card p-4">
+    <div className="bg-card rounded-xl border border-border shadow-card p-4">
       <div className="flex items-center justify-between mb-4">
-        <button onClick={prevMonth} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors">
-          <ChevronLeft className="w-4 h-4 text-gray-600" />
+        <button
+          onClick={prevMonth}
+          disabled={isPrevDisabled}
+          className="p-1.5 hover:bg-secondary rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          aria-label="Previous month"
+        >
+          <ChevronLeft className="w-4 h-4 text-foreground/70" />
         </button>
-        <span className="font-semibold text-gray-900 text-sm">
+        <span className="font-semibold text-foreground text-sm">
           {MONTHS[view.getMonth()]} {view.getFullYear()}
         </span>
-        <button onClick={nextMonth} className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors">
-          <ChevronRight className="w-4 h-4 text-gray-600" />
+        <button onClick={nextMonth} className="p-1.5 hover:bg-secondary rounded-lg transition-colors" aria-label="Next month">
+          <ChevronRight className="w-4 h-4 text-foreground/70" />
         </button>
       </div>
       <div className="grid grid-cols-7 gap-1 mb-2">
-        {DAYS.map(d => <div key={d} className="text-center text-xs font-medium text-gray-400 py-1">{d}</div>)}
+        {DAYS.map((d) => (
+          <div key={d} className="text-center text-xs font-medium text-muted-foreground py-1">{d}</div>
+        ))}
       </div>
       <div className="grid grid-cols-7 gap-1">
         {cells.map((day, i) => {
@@ -54,12 +63,14 @@ export default function DatePicker({ selected, onSelect }) {
               key={day}
               disabled={isPast}
               onClick={() => !isPast && onSelect(ymd)}
+              aria-current={isToday ? 'date' : undefined}
+              aria-pressed={isSelected}
               className={cn(
-                'aspect-square rounded-lg text-sm font-medium transition-all',
-                isSelected ? 'bg-primary-500 text-white' :
+                'aspect-square rounded-lg text-sm font-medium transition-all duration-150',
+                isSelected ? 'bg-primary text-primary-foreground' :
                 isToday ? 'border-2 border-primary-400 text-primary-600' :
-                isPast ? 'text-gray-300 cursor-not-allowed' :
-                'hover:bg-primary-50 hover:text-primary-600 text-gray-700'
+                isPast ? 'text-muted-foreground/40 cursor-not-allowed' :
+                'hover:bg-primary-50 hover:text-primary-600 text-foreground'
               )}
             >
               {day}
