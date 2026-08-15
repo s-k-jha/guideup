@@ -6,6 +6,11 @@ const api = axios.create({
 
 api.interceptors.request.use((config) => {
 
+  // A caller that already set its own Authorization header (e.g. a mentor
+  // explicitly hitting a shared /chat-orders/* route) knows better than the
+  // URL-based heuristic below — leave it alone.
+  if (config.headers?.Authorization) return config
+
   const isAdminRoute = config.url?.includes("/admin")
   const isMentorAuthRoute = config.url?.includes("/mentor-auth")
 

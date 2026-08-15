@@ -1,4 +1,5 @@
 import { Briefcase, IndianRupee, Sparkles } from 'lucide-react'
+import { cn } from '../../lib/utils'
 import { Card } from '../ui/Card'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/Avatar'
 import Badge from '../ui/Badge'
@@ -7,6 +8,7 @@ import Button from '../ui/Button'
 export default function TalkMentorCard({ mentor, pricing, onConnect, connecting }) {
   const hasFirstFree = mentor.offers?.firstFree
   const hasDiscount = mentor.offers?.secondDiscount
+  const isBusy = mentor.availabilityStatus === 2
 
   // `pricing` is this specific student's real tier with this mentor (fetched
   // only once signed in). Until we know that, fall back to the mentor's
@@ -22,15 +24,19 @@ export default function TalkMentorCard({ mentor, pricing, onConnect, connecting 
     <Card className="p-5 flex flex-col h-full">
       <div className="flex items-center gap-3 mb-3">
         <div className="relative shrink-0">
-          <Avatar className="h-12 w-12">
+          <Avatar className={cn('h-12 w-12 ring-2 ring-offset-2 ring-offset-card', isBusy ? 'ring-destructive' : 'ring-success')}>
             <AvatarImage src={mentor.photoUrl} alt={mentor.name} />
             <AvatarFallback>{mentor.name?.[0]}</AvatarFallback>
           </Avatar>
-          <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-success border-2 border-card" title="Online now" />
+          <span
+            className={cn('absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-card', isBusy ? 'bg-destructive' : 'bg-success')}
+            title={isBusy ? 'Busy right now' : 'Online now'}
+          />
         </div>
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5">
             <span className="font-semibold text-foreground text-sm truncate">{mentor.name}</span>
+            {isBusy && <Badge variant="destructive" size="sm">Busy</Badge>}
           </div>
           {(mentor.role || mentor.experienceYears != null) && (
             <div className="flex items-center gap-1 text-xs text-muted-foreground truncate">
@@ -59,16 +65,16 @@ export default function TalkMentorCard({ mentor, pricing, onConnect, connecting 
           <div className="flex items-baseline gap-1.5">
             {!isPaid && (
               <span className="text-xs text-muted-foreground line-through flex items-center">
-                <IndianRupee className="w-3 h-3" />{mentor.chatPrice}
+                <IndianRupee className="w-3 h-3" />{mentor.chatPrice} <span className="ml-0.5">/min</span>
               </span>
             )}
             <span className="text-sm font-bold text-foreground flex items-center">
               {isFree ? 'FREE' : <><IndianRupee className="w-3.5 h-3.5" />{displayPrice}</>}
             </span>
-            <span className="text-[11px] text-muted-foreground">/ 2 min</span>
+            {!isFree && <span className="text-[11px] text-muted-foreground">/min</span>}
           </div>
-          <Button size="sm" onClick={() => onConnect(mentor)} loading={connecting}>
-            Connect
+          <Button size="sm" variant={isBusy ? 'secondary' : 'default'} disabled={isBusy} onClick={() => onConnect(mentor)} loading={connecting}>
+            {isBusy ? 'In a chat' : 'Connect'}
           </Button>
         </div>
       </div>

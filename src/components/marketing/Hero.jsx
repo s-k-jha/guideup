@@ -36,8 +36,8 @@ export default function Hero() {
                 Book a Mock Interview
                 <ArrowRight className="h-4 w-4" />
               </Button>
-              <Button size="lg" variant="outline" onClick={() => navigate('/mentors')}>
-                Meet Our Interviewers
+              <Button size="lg" variant="outline" onClick={() => navigate('/talk-to-mentor')}>
+                Talk to mentor
               </Button>
             </div>
 

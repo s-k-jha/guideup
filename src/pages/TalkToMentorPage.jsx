@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { MessageCircle, ShieldCheck } from 'lucide-react'
 import { getTalkMentors, getChatPricing } from '../api/chatOrders'
 import { useAuth } from '../context/AuthContext'
@@ -22,31 +22,39 @@ export default function TalkToMentorPage() {
   const [selectedMentor, setSelectedMentor] = useState(null)
   const [dialogOpen, setDialogOpen] = useState(false)
   const [pricingMap, setPricingMap] = useState({})
+  const requestedRef = useRef(new Set())
 
   useEffect(() => {
     getTalkMentors().then(setMentors).catch(() => setMentors([])).finally(() => setLoading(false))
   }, [])
 
-  const visibleMentors = showAll ? mentors : mentors.slice(0, INITIAL_COUNT)
+  const visibleMentors = useMemo(
+    () => (showAll ? mentors : mentors.slice(0, INITIAL_COUNT)),
+    [mentors, showAll]
+  )
 
   // For signed-in users, fetch each visible mentor's real tier (first-free /
   // second-discount / fully-paid) so the card shows the price that mentor
   // will actually charge this student, not just a generic marketing default.
   useEffect(() => {
     if (!isAuthenticated) return
-    const toFetch = visibleMentors.filter((m) => !(m._id in pricingMap))
+    const toFetch = visibleMentors.filter((m) => !requestedRef.current.has(m._id))
     if (toFetch.length === 0) return
 
     toFetch.forEach((mentor) => {
+      requestedRef.current.add(mentor._id)
       getChatPricing(mentor._id)
         .then((data) => setPricingMap((prev) => ({ ...prev, [mentor._id]: data })))
-        .catch(() => {})
+        .catch(() => requestedRef.current.delete(mentor._id))
     })
-  }, [isAuthenticated, visibleMentors, pricingMap])
+  }, [isAuthenticated, visibleMentors])
 
   // Signing out should drop stale per-user pricing so the next login refetches.
   useEffect(() => {
-    if (!isAuthenticated) setPricingMap({})
+    if (!isAuthenticated) {
+      setPricingMap({})
+      requestedRef.current.clear()
+    }
   }, [isAuthenticated])
 
   const handleConnect = (mentor) => {

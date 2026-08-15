@@ -14,9 +14,17 @@ import RequireMentorAuth from './components/mentorship/RequireMentorAuth'
 
 const MentorLoginPage = lazy(() => import('./pages/mentor/MentorLoginPage'))
 const MentorDashboardPage = lazy(() => import('./pages/mentor/MentorDashboardPage'))
+const MentorSelfProfilePage = lazy(() => import('./pages/mentor/MentorProfilePage'))
+const MentorAccountPage = lazy(() => import('./pages/mentor/MentorAccountPage'))
+const MentorOrdersPage = lazy(() => import('./pages/mentor/MentorOrdersPage'))
+const MentorPayoutsPage = lazy(() => import('./pages/mentor/MentorPayoutsPage'))
+const MentorAdvancePage = lazy(() => import('./pages/mentor/MentorAdvancePage'))
 
 const TalkToMentorPage = lazy(() => import('./pages/TalkToMentorPage'))
 const MyChatsPage = lazy(() => import('./pages/MyChatsPage'))
+const MyWalletPage = lazy(() => import('./pages/MyWalletPage'))
+const ChatPage = lazy(() => import('./pages/ChatPage'))
+const MentorChatPage = lazy(() => import('./pages/mentor/MentorChatPage'))
 
 const SessionSelectionPage = lazy(() => import('./pages/SessionSelectionPage'))
 const DateSlotPage = lazy(() => import('./pages/DateSlotPage'))
@@ -63,6 +71,7 @@ export default function App() {
             <Route path="/mentors/:slug" element={<MentorProfilePage />} />
             <Route path="/talk-to-mentor" element={<TalkToMentorPage />} />
             <Route path="/my-chats" element={<MyChatsPage />} />
+            <Route path="/wallet" element={<MyWalletPage />} />
             <Route path="/become-a-mentor" element={<BecomeMentorPage />} />
             <Route path="/blog" element={<BlogListPage />} />
             <Route path="/blog/:slug" element={<BlogArticlePage />} />
@@ -70,6 +79,9 @@ export default function App() {
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/refund" element={<RefundPage />} />
           </Route>
+
+          {/* Live chat — full-screen, no marketing chrome */}
+          <Route path="/chat/:chatOrderId" element={<ChatPage />} />
 
           {/* Booking flow — minimal chrome to keep focus on conversion */}
           <Route path="/sessions" element={<SessionSelectionPage />} />
@@ -92,6 +104,12 @@ export default function App() {
           {/* Mentor self-service portal */}
           <Route path="/mentor/login" element={<MentorLoginPage />} />
           <Route path="/mentor/dashboard" element={<RequireMentorAuth><MentorDashboardPage /></RequireMentorAuth>} />
+          <Route path="/mentor/orders" element={<RequireMentorAuth><MentorOrdersPage /></RequireMentorAuth>} />
+          <Route path="/mentor/payouts" element={<RequireMentorAuth><MentorPayoutsPage /></RequireMentorAuth>} />
+          <Route path="/mentor/advance" element={<RequireMentorAuth><MentorAdvancePage /></RequireMentorAuth>} />
+          <Route path="/mentor/profile" element={<RequireMentorAuth><MentorSelfProfilePage /></RequireMentorAuth>} />
+          <Route path="/mentor/account" element={<RequireMentorAuth><MentorAccountPage /></RequireMentorAuth>} />
+          <Route path="/mentor/chat/:chatOrderId" element={<RequireMentorAuth><MentorChatPage /></RequireMentorAuth>} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

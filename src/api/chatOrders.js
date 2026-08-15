@@ -17,3 +17,9 @@ export const getMyChatOrders = () =>
 
 export const getAdminChatOrders = () =>
   api.get('/admin/chat-orders').then((r) => r.data.data.orders)
+
+export const getBusyMentors = () =>
+  api.get('/admin/chat-orders/busy-mentors').then((r) => r.data.data.mentors)
+
+export const refreshBusyMentor = (mentorId) =>
+  api.post(`/admin/chat-orders/busy-mentors/${mentorId}/refresh`).then((r) => r.data.data)

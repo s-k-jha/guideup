@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
-import { ArrowRight, Menu, MessageCircle, User, LogOut, History } from 'lucide-react'
+import { ArrowRight, Menu, MessageCircle, User, LogOut, History, Wallet } from 'lucide-react'
 import { cn } from '../../lib/utils'
 import { useAuth } from '../../context/AuthContext'
 import { useAuthDialog } from '../../context/AuthDialogContext'
@@ -46,6 +46,9 @@ function UserMenu() {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => navigate('/wallet')}>
+          <Wallet className="w-4 h-4" /> My Wallet
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={() => navigate('/my-chats')}>
           <History className="w-4 h-4" /> My Chats
         </DropdownMenuItem>
@@ -93,7 +96,6 @@ export default function Navbar() {
                 )
               }
             >
-              {link.href === '/talk-to-mentor' && <MessageCircle className="w-3.5 h-3.5" />}
               {link.label}
             </NavLink>
           ))}
@@ -101,8 +103,8 @@ export default function Navbar() {
 
         <div className="hidden lg:flex items-center gap-2">
           <UserMenu />
-          <Button size="sm" onClick={() => navigate('/sessions')}>
-            Book a Session
+          <Button size="sm" onClick={() => navigate('/talk-to-mentor')}>
+            Talk to a Mentor
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
@@ -126,17 +128,23 @@ export default function Navbar() {
                     to={link.href}
                     className="px-3.5 py-3 rounded-lg text-base font-medium text-foreground hover:bg-secondary transition-colors flex items-center gap-2"
                   >
-                    {link.href === '/talk-to-mentor' && <MessageCircle className="w-4 h-4" />}
                     {link.label}
                   </Link>
                 </SheetClose>
               ))}
               {user && (
-                <SheetClose asChild>
-                  <Link to="/my-chats" className="px-3.5 py-3 rounded-lg text-base font-medium text-foreground hover:bg-secondary transition-colors flex items-center gap-2">
-                    <History className="w-4 h-4" /> My Chats
-                  </Link>
-                </SheetClose>
+                <>
+                  <SheetClose asChild>
+                    <Link to="/wallet" className="px-3.5 py-3 rounded-lg text-base font-medium text-foreground hover:bg-secondary transition-colors flex items-center gap-2">
+                      <Wallet className="w-4 h-4" /> My Wallet
+                    </Link>
+                  </SheetClose>
+                  <SheetClose asChild>
+                    <Link to="/my-chats" className="px-3.5 py-3 rounded-lg text-base font-medium text-foreground hover:bg-secondary transition-colors flex items-center gap-2">
+                      <History className="w-4 h-4" /> My Chats
+                    </Link>
+                  </SheetClose>
+                </>
               )}
             </nav>
             <div className="mt-auto flex flex-col gap-2 pt-6 border-t border-border">
@@ -158,8 +166,8 @@ export default function Navbar() {
                 </SheetClose>
               )}
               <SheetClose asChild>
-                <Button onClick={() => navigate('/sessions')}>
-                  Book a Session
+                <Button onClick={() => navigate('/talk-to-mentor')}>
+                  Talk to a Mentor
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </SheetClose>
