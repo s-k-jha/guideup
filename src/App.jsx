@@ -4,11 +4,16 @@ import LandingPage from './pages/LandingPage'
 import { BookingProvider } from './context/BookingContext'
 import { AuthProvider } from './context/AuthContext'
 import { AuthDialogProvider } from './context/AuthDialogContext'
+import { MentorAuthProvider } from './context/MentorAuthContext'
 import PublicLayout from './components/layout/PublicLayout'
 import ScrollToTop from './components/ScrollToTop'
 import Toaster from './components/ui/Toaster'
 import { LoadingState } from './components/ui/States'
 import RequireAdminAuth from './components/admin/RequireAdminAuth'
+import RequireMentorAuth from './components/mentorship/RequireMentorAuth'
+
+const MentorLoginPage = lazy(() => import('./pages/mentor/MentorLoginPage'))
+const MentorDashboardPage = lazy(() => import('./pages/mentor/MentorDashboardPage'))
 
 const TalkToMentorPage = lazy(() => import('./pages/TalkToMentorPage'))
 const MyChatsPage = lazy(() => import('./pages/MyChatsPage'))
@@ -47,6 +52,7 @@ export default function App() {
     <BookingProvider>
       <AuthProvider>
       <AuthDialogProvider>
+      <MentorAuthProvider>
       <ScrollToTop />
       <Suspense fallback={<PageFallback />}>
         <Routes>
@@ -83,10 +89,15 @@ export default function App() {
           <Route path="/admin/blog/:id" element={<RequireAdminAuth><AdminBlogEditor /></RequireAdminAuth>} />
           <Route path="/admin/chat-orders" element={<RequireAdminAuth><AdminChatOrders /></RequireAdminAuth>} />
 
+          {/* Mentor self-service portal */}
+          <Route path="/mentor/login" element={<MentorLoginPage />} />
+          <Route path="/mentor/dashboard" element={<RequireMentorAuth><MentorDashboardPage /></RequireMentorAuth>} />
+
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Suspense>
       <Toaster />
+      </MentorAuthProvider>
       </AuthDialogProvider>
       </AuthProvider>
     </BookingProvider>

@@ -79,7 +79,12 @@ export default function Footer() {
 
         <div className="mt-12 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
           <span>© {new Date().getFullYear()} GuideUp. All rights reserved.</span>
-          <span>Made for Indian college students preparing for placements.</span>
+          <div className="flex items-center gap-4">
+            <span>Made for Indian college students preparing for placements.</span>
+            <Link to="/mentor/login" className="hover:text-primary transition-colors underline-offset-2 hover:underline">
+              Mentor Login
+            </Link>
+          </div>
         </div>
       </Container>
     </footer>

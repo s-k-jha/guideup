@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom'
-import { ArrowRight, Star, Clock, IndianRupee, CheckCircle2 } from 'lucide-react'
+import { ArrowRight, Star, CheckCircle2 } from 'lucide-react'
 import { Container } from '../layout/PageContainer'
 import Button from '../ui/Button'
+import HeroFlowPreview from './HeroFlowPreview'
 
 export default function Hero() {
   const navigate = useNavigate()
@@ -53,58 +54,8 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Product preview card — real UI, not a stock photo */}
-          <div className="relative">
-            <div className="absolute -inset-6 bg-gradient-to-tr from-primary-100/60 to-transparent rounded-[2rem] blur-2xl -z-10" />
-            <div className="rounded-2xl border border-border bg-card shadow-popover p-5 sm:p-6">
-              <div className="flex items-center justify-between mb-5">
-                <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Choose a session</span>
-                <span className="text-xs text-muted-foreground">Step 1 of 3</span>
-              </div>
-
-              <div className="space-y-3">
-                {[
-                  { title: 'DSA Mock Interview', mins: 45, price: 499, selected: true },
-                  { title: 'System Design Round', mins: 60, price: 799, selected: false },
-                  { title: 'Resume + HR Round', mins: 30, price: 349, selected: false },
-                ].map((s) => (
-                  <div
-                    key={s.title}
-                    className={
-                      s.selected
-                        ? 'rounded-xl border-2 border-primary-500 bg-primary-50 p-4'
-                        : 'rounded-xl border border-border bg-secondary/30 p-4'
-                    }
-                  >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className={s.selected ? 'font-semibold text-primary-800 text-sm' : 'font-semibold text-foreground text-sm'}>
-                          {s.title}
-                        </div>
-                        <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-3 h-3" /> {s.mins} min
-                          </span>
-                          <span className="flex items-center gap-0.5 font-semibold text-foreground">
-                            <IndianRupee className="w-3 h-3" /> {s.price}
-                          </span>
-                        </div>
-                      </div>
-                      {s.selected && (
-                        <span className="w-6 h-6 rounded-full bg-primary-500 flex items-center justify-center shrink-0">
-                          <CheckCircle2 className="w-4 h-4 text-white" />
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-5 h-11 rounded-lg bg-primary flex items-center justify-center text-primary-foreground text-sm font-semibold">
-                Continue
-              </div>
-            </div>
-          </div>
+          {/* Product preview — how the talk-to-mentor flow works end to end */}
+          <HeroFlowPreview />
         </div>
       </Container>
 

@@ -11,12 +11,17 @@ export default function TalkMentorCard({ mentor, onConnect, connecting }) {
   return (
     <Card className="p-5 flex flex-col h-full">
       <div className="flex items-center gap-3 mb-3">
-        <Avatar className="h-12 w-12">
-          <AvatarImage src={mentor.photoUrl} alt={mentor.name} />
-          <AvatarFallback>{mentor.name?.[0]}</AvatarFallback>
-        </Avatar>
+        <div className="relative shrink-0">
+          <Avatar className="h-12 w-12">
+            <AvatarImage src={mentor.photoUrl} alt={mentor.name} />
+            <AvatarFallback>{mentor.name?.[0]}</AvatarFallback>
+          </Avatar>
+          <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-success border-2 border-card" title="Online now" />
+        </div>
         <div className="min-w-0 flex-1">
-          <div className="font-semibold text-foreground text-sm truncate">{mentor.name}</div>
+          <div className="flex items-center gap-1.5">
+            <span className="font-semibold text-foreground text-sm truncate">{mentor.name}</span>
+          </div>
           {(mentor.role || mentor.experienceYears != null) && (
             <div className="flex items-center gap-1 text-xs text-muted-foreground truncate">
               <Briefcase className="w-3 h-3 shrink-0" />
