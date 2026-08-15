@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Circle, Loader2, IndianRupee, CalendarCheck, Clock, PhoneOff, ArrowRight } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Circle, Loader2, IndianRupee, CalendarCheck, Clock, PhoneOff, ArrowRight, MessageCircle } from 'lucide-react'
 import { useMentorAuth } from '../../context/MentorAuthContext'
 import { updateMentorStatus } from '../../api/mentorAuth'
 import { getMentorEarnings, endActiveChat } from '../../api/mentorFinance'
 import { useToast } from '../../hooks/use-toast'
+import { getSocket, disconnectSocket } from '../../lib/socket'
 import Seo from '../../lib/seo'
 import MentorLayout from '../../components/layout/MentorLayout'
 import { Card } from '../../components/ui/Card'
@@ -24,8 +25,9 @@ function minutesToHM(mins) {
 }
 
 export default function MentorDashboardPage() {
-  const { mentor, setMentor } = useMentorAuth()
+  const { mentor, setMentor, refresh } = useMentorAuth()
   const { toast } = useToast()
+  const navigate = useNavigate()
   const [statusSaving, setStatusSaving] = useState(false)
   const [ending, setEnding] = useState(false)
   const [earnings, setEarnings] = useState(null)
@@ -36,6 +38,34 @@ export default function MentorDashboardPage() {
   }
 
   useEffect(() => { loadEarnings() }, [])
+
+  // Live "someone connected with you" push — keeps the dashboard in sync
+  // without a manual refresh, and lets the mentor jump straight into chat.
+  useEffect(() => {
+    const token = localStorage.getItem('mentor_token')
+    if (!token) return
+    const socket = getSocket(token)
+
+    const onIncoming = (payload) => {
+      refresh()
+      toast({
+        title: `New chat from ${payload?.studentName || 'a student'}`,
+        description: 'Tap below to open the chat.',
+        variant: 'success',
+        action: (
+          <Button size="sm" onClick={() => navigate(`/mentor/chat/${payload.chatOrderId}`)}>
+            Open Chat
+          </Button>
+        ),
+      })
+    }
+
+    socket.on('chat:incoming', onIncoming)
+    return () => {
+      socket.off('chat:incoming', onIncoming)
+      disconnectSocket()
+    }
+  }, [])
 
   const isBusy = mentor?.availabilityStatus === 2
 
@@ -90,14 +120,23 @@ export default function MentorDashboardPage() {
           </p>
 
           {isBusy ? (
-            <div className="flex items-center justify-between gap-3 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3">
+            <div className="flex items-center justify-between gap-3 rounded-lg border border-destructive/30 bg-destructive/5 px-4 py-3 flex-wrap">
               <span className="flex items-center gap-2 text-sm font-medium text-destructive">
                 <Circle className="w-2.5 h-2.5 rounded-full bg-destructive" fill="currentColor" />
                 You're in an active chat
               </span>
-              <Button size="sm" variant="destructive" onClick={handleEndChat} loading={ending}>
-                <PhoneOff className="w-3.5 h-3.5" /> End Chat
-              </Button>
+              <div className="flex items-center gap-2">
+                {mentor.activeChatOrderId && (
+                  <Button size="sm" asChild>
+                    <Link to={`/mentor/chat/${mentor.activeChatOrderId}`}>
+                      <MessageCircle className="w-3.5 h-3.5" /> Open Chat
+                    </Link>
+                  </Button>
+                )}
+                <Button size="sm" variant="destructive" onClick={handleEndChat} loading={ending}>
+                  <PhoneOff className="w-3.5 h-3.5" /> End Chat
+                </Button>
+              </div>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-2">

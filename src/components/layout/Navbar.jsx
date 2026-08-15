@@ -96,7 +96,6 @@ export default function Navbar() {
                 )
               }
             >
-              {link.href === '/talk-to-mentor' && <MessageCircle className="w-3.5 h-3.5" />}
               {link.label}
             </NavLink>
           ))}
@@ -104,8 +103,8 @@ export default function Navbar() {
 
         <div className="hidden lg:flex items-center gap-2">
           <UserMenu />
-          <Button size="sm" onClick={() => navigate('/sessions')}>
-            Book a Session
+          <Button size="sm" onClick={() => navigate('/talk-to-mentor')}>
+            Talk to a Mentor
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
@@ -129,7 +128,6 @@ export default function Navbar() {
                     to={link.href}
                     className="px-3.5 py-3 rounded-lg text-base font-medium text-foreground hover:bg-secondary transition-colors flex items-center gap-2"
                   >
-                    {link.href === '/talk-to-mentor' && <MessageCircle className="w-4 h-4" />}
                     {link.label}
                   </Link>
                 </SheetClose>
@@ -168,8 +166,8 @@ export default function Navbar() {
                 </SheetClose>
               )}
               <SheetClose asChild>
-                <Button onClick={() => navigate('/sessions')}>
-                  Book a Session
+                <Button onClick={() => navigate('/talk-to-mentor')}>
+                  Talk to a Mentor
                   <ArrowRight className="h-4 w-4" />
                 </Button>
               </SheetClose>

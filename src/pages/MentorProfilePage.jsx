@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { Briefcase, Linkedin, ArrowRight, Clock } from 'lucide-react'
+import { Briefcase, Linkedin, ArrowRight, Clock, MessageCircle } from 'lucide-react'
 import { getPublicMentorBySlug } from '../api/mentors'
+import { useAuthDialog } from '../context/AuthDialogContext'
 import Seo, { absoluteUrl } from '../lib/seo'
 import { Container, Section } from '../components/layout/PageContainer'
 import Breadcrumb from '../components/ui/Breadcrumb'
@@ -10,6 +11,7 @@ import Badge from '../components/ui/Badge'
 import Button from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import { LoadingState, ErrorState } from '../components/ui/States'
+import ConnectDialog from '../components/mentorship/ConnectDialog'
 
 export default function MentorProfilePage() {
   const { slug } = useParams()
@@ -17,6 +19,8 @@ export default function MentorProfilePage() {
   const [mentor, setMentor] = useState(null)
   const [loading, setLoading] = useState(true)
   const [notFound, setNotFound] = useState(false)
+  const { requireAuth } = useAuthDialog()
+  const [dialogOpen, setDialogOpen] = useState(false)
 
   useEffect(() => {
     setLoading(true)
@@ -113,18 +117,17 @@ export default function MentorProfilePage() {
           </Card>
 
           <div className="mt-6 rounded-xl border border-primary-100 bg-primary-50 p-5 flex items-center gap-4 flex-wrap">
-            <Clock className="w-5 h-5 text-primary-600 shrink-0" />
+            <MessageCircle className="w-5 h-5 text-primary-600 shrink-0" />
             <p className="text-sm text-primary-800 flex-1 min-w-[200px]">
-              A mentor is matched to your session after booking — book a slot and {mentor.name.split(' ')[0]} may be your interviewer.
+              Have a quick question or need advice? Connect directly with {mentor.name.split(' ')[0]} via Talk to a Mentor.
             </p>
-            <Button asChild>
-              <Link to="/sessions">
-                Book a Mock Interview <ArrowRight className="w-4 h-4" />
-              </Link>
+            <Button onClick={() => requireAuth(() => setDialogOpen(true))}>
+              Talk to Mentor <ArrowRight className="w-4 h-4" />
             </Button>
           </div>
         </Container>
       </Section>
+      <ConnectDialog mentor={mentor} open={dialogOpen} onOpenChange={setDialogOpen} />
     </>
   )
 }

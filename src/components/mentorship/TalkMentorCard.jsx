@@ -65,13 +65,13 @@ export default function TalkMentorCard({ mentor, pricing, onConnect, connecting 
           <div className="flex items-baseline gap-1.5">
             {!isPaid && (
               <span className="text-xs text-muted-foreground line-through flex items-center">
-                <IndianRupee className="w-3 h-3" />{mentor.chatPrice}
+                <IndianRupee className="w-3 h-3" />{mentor.chatPrice} <span className="ml-0.5">/min</span>
               </span>
             )}
             <span className="text-sm font-bold text-foreground flex items-center">
               {isFree ? 'FREE' : <><IndianRupee className="w-3.5 h-3.5" />{displayPrice}</>}
             </span>
-            <span className="text-[11px] text-muted-foreground">/ 2 min</span>
+            {!isFree && <span className="text-[11px] text-muted-foreground">/min</span>}
           </div>
           <Button size="sm" variant={isBusy ? 'secondary' : 'default'} disabled={isBusy} onClick={() => onConnect(mentor)} loading={connecting}>
             {isBusy ? 'In a chat' : 'Connect'}

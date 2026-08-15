@@ -23,6 +23,8 @@ const MentorAdvancePage = lazy(() => import('./pages/mentor/MentorAdvancePage'))
 const TalkToMentorPage = lazy(() => import('./pages/TalkToMentorPage'))
 const MyChatsPage = lazy(() => import('./pages/MyChatsPage'))
 const MyWalletPage = lazy(() => import('./pages/MyWalletPage'))
+const ChatPage = lazy(() => import('./pages/ChatPage'))
+const MentorChatPage = lazy(() => import('./pages/mentor/MentorChatPage'))
 
 const SessionSelectionPage = lazy(() => import('./pages/SessionSelectionPage'))
 const DateSlotPage = lazy(() => import('./pages/DateSlotPage'))
@@ -78,6 +80,9 @@ export default function App() {
             <Route path="/refund" element={<RefundPage />} />
           </Route>
 
+          {/* Live chat — full-screen, no marketing chrome */}
+          <Route path="/chat/:chatOrderId" element={<ChatPage />} />
+
           {/* Booking flow — minimal chrome to keep focus on conversion */}
           <Route path="/sessions" element={<SessionSelectionPage />} />
           <Route path="/schedule" element={<DateSlotPage />} />
@@ -104,6 +109,7 @@ export default function App() {
           <Route path="/mentor/advance" element={<RequireMentorAuth><MentorAdvancePage /></RequireMentorAuth>} />
           <Route path="/mentor/profile" element={<RequireMentorAuth><MentorSelfProfilePage /></RequireMentorAuth>} />
           <Route path="/mentor/account" element={<RequireMentorAuth><MentorAccountPage /></RequireMentorAuth>} />
+          <Route path="/mentor/chat/:chatOrderId" element={<RequireMentorAuth><MentorChatPage /></RequireMentorAuth>} />
 
           <Route path="*" element={<NotFoundPage />} />
         </Routes>

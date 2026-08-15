@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { CheckCircle2, IndianRupee, Sparkles, Clock, Wallet } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { CheckCircle2, IndianRupee, Sparkles, Clock, Wallet, MessageCircle } from 'lucide-react'
 import { getChatPricing, createChatOrder } from '../../api/chatOrders'
 import { getMinRecharge } from '../../api/wallet'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/Dialog'
@@ -15,11 +16,13 @@ const TIER_LABEL = {
 }
 
 export default function ConnectDialog({ mentor, open, onOpenChange }) {
+  const navigate = useNavigate()
   const [step, setStep] = useState('loading')
   const [pricing, setPricing] = useState(null)
   const [error, setError] = useState('')
   const [rechargeOpen, setRechargeOpen] = useState(false)
   const [rechargeInfo, setRechargeInfo] = useState(null)
+  const [chatOrderId, setChatOrderId] = useState(null)
 
   useEffect(() => {
     if (!open || !mentor) return
@@ -40,7 +43,8 @@ export default function ConnectDialog({ mentor, open, onOpenChange }) {
     setStep('processing')
     setError('')
     try {
-      await createChatOrder(mentor._id)
+      const result = await createChatOrder(mentor._id)
+      setChatOrderId(result.chatOrder?._id)
       setStep('success')
     } catch (err) {
       if (err?.response?.status === 402) {
@@ -82,9 +86,18 @@ export default function ConnectDialog({ mentor, open, onOpenChange }) {
               </div>
               <DialogTitle className="mb-2">You're connected!</DialogTitle>
               <DialogDescription>
-                {mentor.name} will reach out to you shortly to start your chat. Keep an eye on your email and phone.
+                {mentor.name} has been notified and can join the chat right now.
               </DialogDescription>
-              <Button className="w-full h-11 mt-6" onClick={() => onOpenChange(false)}>Done</Button>
+              <Button
+                className="w-full h-11 mt-6"
+                onClick={() => {
+                  onOpenChange(false)
+                  if (chatOrderId) navigate(`/chat/${chatOrderId}`)
+                }}
+                disabled={!chatOrderId}
+              >
+                <MessageCircle className="w-4 h-4" /> Open Chat
+              </Button>
             </div>
           ) : (
             <>
