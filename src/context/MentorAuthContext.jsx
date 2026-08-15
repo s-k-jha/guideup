@@ -24,8 +24,11 @@ export function MentorAuthProvider({ children }) {
   const login = async (data) => {
     const res = await loginMentor(data)
     localStorage.setItem('mentor_token', res.token)
-    setMentor(res.mentor)
-    return res.mentor
+    // The login response only carries a minimal subset (id/name/email/type/
+    // status) — fetch the full profile so the dashboard form isn't blank.
+    const full = await getMentorMe()
+    setMentor(full)
+    return full
   }
 
   const logout = () => {
