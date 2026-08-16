@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
-  LayoutDashboard, CalendarCheck, BookOpen, Users, Newspaper, LogOut, Menu, MessageCircle,
+  LayoutDashboard, CalendarCheck, BookOpen, Users, Newspaper, LogOut, Menu, MessageCircle, Star,
 } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '../../lib/utils'
@@ -12,6 +12,7 @@ const NAV = [
   { icon: BookOpen, label: 'Sessions', href: '/admin/sessions' },
   { icon: Users, label: 'Mentors', href: '/admin/mentors' },
   { icon: MessageCircle, label: 'Chat Orders', href: '/admin/chat-orders' },
+  { icon: Star, label: 'Reviews', href: '/admin/reviews' },
   { icon: Newspaper, label: 'Blog', href: '/admin/blog' },
 ]
 

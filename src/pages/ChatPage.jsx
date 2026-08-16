@@ -7,6 +7,7 @@ import { getMinRecharge } from '../api/wallet'
 import { createChatOrder } from '../api/chatOrders'
 import Seo from '../lib/seo'
 import ChatRoom from '../components/chat/ChatRoom'
+import ChatReviewDialog from '../components/chat/ChatReviewDialog'
 import { getChatOrderAsUser, getChatMessagesAsUser } from '../api/chat'
 import { LoadingState } from '../components/ui/States'
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../components/ui/Dialog'
@@ -25,6 +26,8 @@ export default function ChatPage() {
   const [checkingBalance, setCheckingBalance] = useState(false)
   const [rechargeOpen, setRechargeOpen] = useState(false)
   const [rechargeInfo, setRechargeInfo] = useState(null)
+  const [reviewOpen, setReviewOpen] = useState(false)
+  const [reviewOrder, setReviewOrder] = useState(null)
 
   useEffect(() => {
     if (loading) return
@@ -37,12 +40,28 @@ export default function ChatPage() {
     setEndedMentor(null)
     setPromptOpen(false)
     setRechargeOpen(false)
+    setReviewOpen(false)
+    setReviewOrder(null)
   }, [chatOrderId])
 
+  // The review prompt takes priority when the chat ends — it's quick and
+  // optional, and only offered for whichever half (mentor/platform) this
+  // chat hasn't already collected. The "keep chatting" prompt follows once
+  // the student is done with (or skips) the review, so they're never
+  // stacked on top of each other.
   const handleChatEnded = (order) => {
     const mentor = order?.mentorId
     if (!mentor?._id) return
     setEndedMentor(mentor)
+    if (!order.mentorReviewed || !order.platformReviewed) {
+      setReviewOrder(order)
+      setReviewOpen(true)
+    } else {
+      setPromptOpen(true)
+    }
+  }
+
+  const handleReviewDone = () => {
     setPromptOpen(true)
   }
 
@@ -90,6 +109,13 @@ export default function ChatPage() {
         backHref="/my-chats"
         otherPartyLabel="Your mentor"
         onEnded={handleChatEnded}
+      />
+
+      <ChatReviewDialog
+        open={reviewOpen}
+        onOpenChange={setReviewOpen}
+        chatOrder={reviewOrder}
+        onDone={handleReviewDone}
       />
 
       <Dialog open={promptOpen} onOpenChange={setPromptOpen}>

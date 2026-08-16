@@ -50,6 +50,7 @@ const AdminMentors = lazy(() => import('./pages/admin/AdminMentors'))
 const AdminBlog = lazy(() => import('./pages/admin/AdminBlog'))
 const AdminBlogEditor = lazy(() => import('./pages/admin/AdminBlogEditor'))
 const AdminChatOrders = lazy(() => import('./pages/admin/AdminChatOrders'))
+const AdminReviews = lazy(() => import('./pages/admin/AdminReviews'))
 
 function PageFallback() {
   return <LoadingState className="min-h-[60vh]" label="" />
@@ -100,6 +101,7 @@ export default function App() {
           <Route path="/admin/blog/new" element={<RequireAdminAuth><AdminBlogEditor /></RequireAdminAuth>} />
           <Route path="/admin/blog/:id" element={<RequireAdminAuth><AdminBlogEditor /></RequireAdminAuth>} />
           <Route path="/admin/chat-orders" element={<RequireAdminAuth><AdminChatOrders /></RequireAdminAuth>} />
+          <Route path="/admin/reviews" element={<RequireAdminAuth><AdminReviews /></RequireAdminAuth>} />
 
           {/* Mentor self-service portal */}
           <Route path="/mentor/login" element={<MentorLoginPage />} />
