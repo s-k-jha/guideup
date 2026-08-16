@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Sparkles } from 'lucide-react'
 import { getMentorOrders } from '../../api/mentorFinance'
 import Seo from '../../lib/seo'
 import MentorLayout from '../../components/layout/MentorLayout'
@@ -40,6 +41,7 @@ export default function MentorOrdersPage() {
                 <TableHead>Tier</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Handling</TableHead>
                 <TableHead>Date</TableHead>
               </TableRow>
             </TableHeader>
@@ -53,6 +55,13 @@ export default function MentorOrdersPage() {
                   <TableCell><Badge variant={TIER_VARIANT[o.tier]}>{o.tier}</Badge></TableCell>
                   <TableCell className="text-sm font-medium">₹{o.amountPaid}</TableCell>
                   <TableCell><Badge variant={STATUS_VARIANT[o.status]}>{o.status.replace('_', ' ')}</Badge></TableCell>
+                  <TableCell>
+                    {o.aiHandled && (
+                      <Badge size="sm" className="flex items-center gap-1 w-fit">
+                        <Sparkles className="w-3 h-3" /> AI
+                      </Badge>
+                    )}
+                  </TableCell>
                   <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
                     {new Date(o.createdAt).toLocaleDateString('en-IN')}
                   </TableCell>
