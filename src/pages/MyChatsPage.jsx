@@ -8,6 +8,7 @@ import { Container, Section, SectionHeading } from '../components/layout/PageCon
 import { Card } from '../components/ui/Card'
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/Avatar'
 import Badge from '../components/ui/Badge'
+import Button from '../components/ui/Button'
 import { Skeleton } from '../components/ui/Skeleton'
 import { EmptyState } from '../components/ui/States'
 
@@ -62,7 +63,13 @@ export default function MyChatsPage() {
                       <span className="flex items-center gap-1"><IndianRupee className="w-3 h-3" />{o.amountPaid} · {TIER_LABEL[o.tier]}</span>
                     </div>
                   </div>
-                  <Badge variant={STATUS_VARIANT[o.status] || 'secondary'} className="shrink-0">{o.status.replace('_', ' ')}</Badge>
+                  {o.status === 'confirmed' ? (
+                    <Button size="sm" className="shrink-0" onClick={() => navigate(`/chat/${o._id}`)}>
+                      <MessageCircle className="w-3.5 h-3.5" /> Continue chat
+                    </Button>
+                  ) : (
+                    <Badge variant={STATUS_VARIANT[o.status] || 'secondary'} className="shrink-0">{o.status.replace('_', ' ')}</Badge>
+                  )}
                 </Card>
               ))}
             </div>
