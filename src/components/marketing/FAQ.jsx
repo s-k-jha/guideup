@@ -26,7 +26,7 @@ const FAQS = [
 
 export default function FAQ() {
   return (
-    <Section className="bg-secondary/30">
+    <Section id="faq" className="bg-secondary/30 scroll-mt-20">
       <Container className="max-w-3xl">
         <SectionHeading eyebrow="FAQ" title="Common questions" />
         <Accordion type="single" collapsible className="bg-card rounded-2xl border border-border px-6">
