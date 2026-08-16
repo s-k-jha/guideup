@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Send, CheckCircle2, Check, Clock, Loader2, MessageCircle } from 'lucide-react'
+import { ArrowLeft, Send, CheckCircle2, Check, Clock, Loader2, MessageCircle, Sparkles } from 'lucide-react'
 import { getSocket, disconnectSocket } from '../../lib/socket'
 import { useToast } from '../../hooks/use-toast'
 import { cn } from '../../lib/utils'
@@ -29,8 +29,12 @@ function formatCountdown(seconds) {
  * The 2-minute timer is server-authoritative (see socketService.js): it only
  * starts once BOTH participants have joined the room, so whoever arrives
  * first waits without burning down the clock, and it can't be skipped by a
- * disconnect. `onEnded` fires once, with the last known order, when the chat
- * transitions to ended — the student page uses it to offer a wallet top-up.
+ * disconnect. `onEnded` fires once, with the last known order, but only for
+ * a *live* transition witnessed in this session (the countdown running out,
+ * or the mentor ending it) — the student page uses it to offer a review
+ * prompt and a wallet top-up. Simply opening an already-ended chat (from
+ * chat history, to read it back later) still renders the full read-only
+ * transcript, it just doesn't re-fire those prompts every time.
  */
 export default function ChatRoom({ chatOrderId, token, role, fetchOrder, fetchMessages, backHref, otherPartyLabel, onEnded }) {
   const { toast } = useToast()
@@ -89,7 +93,10 @@ export default function ChatRoom({ chatOrderId, token, role, fetchOrder, fetchMe
       if (newEndsAt) setEndsAt(newEndsAt)
     }
 
-    const onChatEnded = () => setEnded(true)
+    const onChatEnded = () => {
+      setEnded(true)
+      onEnded?.(orderRef.current)
+    }
 
     socket.on('chat:message', onMessage)
     socket.on('chat:partnerJoined', onPartnerJoined)
@@ -124,16 +131,15 @@ export default function ChatRoom({ chatOrderId, token, role, fetchOrder, fetchMe
     const tick = () => {
       const remaining = Math.max(0, Math.round((endsAt - Date.now()) / 1000))
       setSecondsLeft(remaining)
-      if (remaining <= 0) setEnded(true)
+      if (remaining <= 0) {
+        setEnded(true)
+        onEnded?.(orderRef.current)
+      }
     }
     tick()
     const interval = setInterval(tick, 1000)
     return () => clearInterval(interval)
   }, [endsAt, ended])
-
-  useEffect(() => {
-    if (ended) onEnded?.(orderRef.current)
-  }, [ended])
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' })
@@ -199,6 +205,7 @@ export default function ChatRoom({ chatOrderId, token, role, fetchOrder, fetchMe
 
   const otherName = role === 'user' ? order?.mentorId?.name : order?.userId?.name
   const otherPhoto = role === 'user' ? order?.mentorId?.photoUrl : undefined
+  const isAiHandled = !!order?.aiHandled
 
   const statusLabel = ended ? 'Chat ended' : chatActive ? 'Connected' : joined ? `Waiting for ${waitingLabel}…` : 'Connecting…'
   const statusDotClass = ended ? 'bg-muted-foreground/40' : chatActive ? 'bg-success' : joined ? 'bg-primary' : 'bg-muted-foreground/40'
@@ -223,7 +230,14 @@ export default function ChatRoom({ chatOrderId, token, role, fetchOrder, fetchMe
           </div>
 
           <div className="min-w-0 flex-1">
-            <div className="text-sm font-semibold text-foreground truncate">{otherName || otherPartyLabel}</div>
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="text-sm font-semibold text-foreground truncate">{otherName || otherPartyLabel}</span>
+              {isAiHandled && (
+                <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-primary-700 bg-primary-50 px-1.5 py-0.5 rounded-full shrink-0">
+                  <Sparkles className="w-2.5 h-2.5" /> AI
+                </span>
+              )}
+            </div>
             <div className="text-xs text-muted-foreground truncate">{statusLabel}</div>
           </div>
 
@@ -249,6 +263,16 @@ export default function ChatRoom({ chatOrderId, token, role, fetchOrder, fetchMe
         }}
       >
         <div className="max-w-2xl w-full mx-auto px-3 sm:px-4 py-6 min-h-full">
+          {isAiHandled && (
+            <div className="flex items-start gap-2.5 bg-primary-50/60 border border-primary-100 text-primary-800 text-xs leading-relaxed rounded-xl px-4 py-3 mb-4">
+              <Sparkles className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+              <span>
+                This chat is answered by an AI mentor assistant grounded in {otherName || 'the mentor'}'s profile and
+                expertise — not a live reply from {otherName || 'them'} directly.
+              </span>
+            </div>
+          )}
+
           {!joined && (
             <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
               <Loader2 className="w-5 h-5 animate-spin text-primary" />

@@ -67,6 +67,10 @@ export default function MyChatsPage() {
                     <Button size="sm" className="shrink-0" onClick={() => navigate(`/chat/${o._id}`)}>
                       <MessageCircle className="w-3.5 h-3.5" /> Continue chat
                     </Button>
+                  ) : o.status === 'completed' ? (
+                    <Button size="sm" variant="outline" className="shrink-0" onClick={() => navigate(`/chat/${o._id}`)}>
+                      <MessageCircle className="w-3.5 h-3.5" /> View chat
+                    </Button>
                   ) : (
                     <Badge variant={STATUS_VARIANT[o.status] || 'secondary'} className="shrink-0">{o.status.replace('_', ' ')}</Badge>
                   )}

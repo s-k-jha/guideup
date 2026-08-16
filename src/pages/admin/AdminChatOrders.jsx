@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
-import { RefreshCw, AlertTriangle } from 'lucide-react'
+import { RefreshCw, AlertTriangle, Sparkles } from 'lucide-react'
 import { getAdminChatOrders, getBusyMentors, refreshBusyMentor } from '../../api/chatOrders'
+import { getSettings, updateSettings } from '../../api/settings'
 import { useToast } from '../../hooks/use-toast'
 import Seo from '../../lib/seo'
 import AdminLayout from '../../components/layout/AdminLayout'
 import Badge from '../../components/ui/Badge'
 import Button from '../../components/ui/Button'
+import Switch from '../../components/ui/Switch'
 import { Card } from '../../components/ui/Card'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '../../components/ui/Table'
 import { Skeleton } from '../../components/ui/Skeleton'
@@ -21,6 +23,66 @@ function timeAgo(date) {
   if (mins < 60) return `${mins}m ago`
   const hrs = Math.floor(mins / 60)
   return `${hrs}h ${mins % 60}m ago`
+}
+
+function AiChatToggleCard() {
+  const { toast } = useToast()
+  const [settings, setSettings] = useState(null)
+  const [saving, setSaving] = useState(false)
+
+  const load = () => getSettings().then(setSettings).catch(() => {})
+
+  useEffect(() => { load() }, [])
+
+  const handleToggle = async (next) => {
+    setSaving(true)
+    const previous = settings
+    setSettings((s) => ({ ...s, aiChatEnabled: next }))
+    try {
+      const updated = await updateSettings({ aiChatEnabled: next })
+      setSettings(updated)
+      toast({ title: next ? 'AI Mentor Chat enabled' : 'AI Mentor Chat disabled', variant: 'success' })
+    } catch (err) {
+      setSettings(previous)
+      toast({
+        title: err?.response?.data?.message || 'Could not update AI Mentor Chat setting',
+        variant: 'destructive',
+      })
+    }
+    setSaving(false)
+  }
+
+  if (!settings) return <Skeleton className="h-24 rounded-xl mb-6" />
+
+  return (
+    <Card className="p-5 mb-6 flex items-center justify-between gap-4 flex-wrap">
+      <div className="flex items-start gap-3">
+        <div className="w-9 h-9 rounded-lg bg-primary-50 flex items-center justify-center shrink-0">
+          <Sparkles className="w-4 h-4 text-primary-600" />
+        </div>
+        <div>
+          <h3 className="text-sm font-semibold text-foreground">AI Mentor Chat</h3>
+          <p className="text-xs text-muted-foreground mt-0.5 max-w-md">
+            When on, new "Talk to a Mentor" chats are answered by an AI assistant instead of requiring the
+            mentor to be online — clearly disclosed to the student in the chat itself.
+          </p>
+          {!settings.aiConfigured && (
+            <Badge variant="warning" size="sm" className="mt-2">
+              No AI provider configured — set ANTHROPIC_API_KEY or OPENAI_API_KEY on the server
+            </Badge>
+          )}
+          {settings.aiConfigured && (
+            <p className="text-[11px] text-muted-foreground mt-1.5">Active provider: {settings.aiProvider}</p>
+          )}
+        </div>
+      </div>
+      <Switch
+        checked={settings.aiChatEnabled}
+        onCheckedChange={handleToggle}
+        disabled={saving || (!settings.aiChatEnabled && !settings.aiConfigured)}
+      />
+    </Card>
+  )
 }
 
 function BusyMentorsQueue() {
@@ -141,6 +203,7 @@ export default function AdminChatOrders() {
     <>
       <Seo title="Chat Orders" path="/admin/chat-orders" noindex />
       <AdminLayout title="Talk-to-Mentor Chats">
+        <AiChatToggleCard />
         <BusyMentorsQueue />
 
         {loading && (
@@ -162,6 +225,7 @@ export default function AdminChatOrders() {
                 <TableHead>Tier</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Handling</TableHead>
                 <TableHead>Date</TableHead>
               </TableRow>
             </TableHeader>
@@ -181,6 +245,13 @@ export default function AdminChatOrders() {
                   <TableCell><Badge variant={TIER_VARIANT[o.tier]}>{o.tier}</Badge></TableCell>
                   <TableCell className="text-sm font-medium">₹{o.amountPaid}</TableCell>
                   <TableCell><Badge variant={STATUS_VARIANT[o.status]}>{o.status.replace('_', ' ')}</Badge></TableCell>
+                  <TableCell>
+                    {o.aiHandled && (
+                      <Badge size="sm" className="flex items-center gap-1 w-fit">
+                        <Sparkles className="w-3 h-3" /> AI
+                      </Badge>
+                    )}
+                  </TableCell>
                   <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
                     {new Date(o.createdAt).toLocaleDateString('en-IN')}
                   </TableCell>
