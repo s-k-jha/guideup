@@ -23,6 +23,7 @@ const MentorAdvancePage = lazy(() => import('./pages/mentor/MentorAdvancePage'))
 const TalkToMentorPage = lazy(() => import('./pages/TalkToMentorPage'))
 const MyChatsPage = lazy(() => import('./pages/MyChatsPage'))
 const MyWalletPage = lazy(() => import('./pages/MyWalletPage'))
+const NotesPage = lazy(() => import('./pages/NotesPage'))
 const ChatPage = lazy(() => import('./pages/ChatPage'))
 const MentorChatPage = lazy(() => import('./pages/mentor/MentorChatPage'))
 
@@ -51,6 +52,7 @@ const AdminBlog = lazy(() => import('./pages/admin/AdminBlog'))
 const AdminBlogEditor = lazy(() => import('./pages/admin/AdminBlogEditor'))
 const AdminChatOrders = lazy(() => import('./pages/admin/AdminChatOrders'))
 const AdminReviews = lazy(() => import('./pages/admin/AdminReviews'))
+const AdminNotes = lazy(() => import('./pages/admin/AdminNotes'))
 
 function PageFallback() {
   return <LoadingState className="min-h-[60vh]" label="" />
@@ -73,6 +75,7 @@ export default function App() {
             <Route path="/talk-to-mentor" element={<TalkToMentorPage />} />
             <Route path="/my-chats" element={<MyChatsPage />} />
             <Route path="/wallet" element={<MyWalletPage />} />
+            <Route path="/notes" element={<NotesPage />} />
             <Route path="/become-a-mentor" element={<BecomeMentorPage />} />
             <Route path="/blog" element={<BlogListPage />} />
             <Route path="/blog/:slug" element={<BlogArticlePage />} />
@@ -102,6 +105,7 @@ export default function App() {
           <Route path="/admin/blog/:id" element={<RequireAdminAuth><AdminBlogEditor /></RequireAdminAuth>} />
           <Route path="/admin/chat-orders" element={<RequireAdminAuth><AdminChatOrders /></RequireAdminAuth>} />
           <Route path="/admin/reviews" element={<RequireAdminAuth><AdminReviews /></RequireAdminAuth>} />
+          <Route path="/admin/notes" element={<RequireAdminAuth><AdminNotes /></RequireAdminAuth>} />
 
           {/* Mentor self-service portal */}
           <Route path="/mentor/login" element={<MentorLoginPage />} />

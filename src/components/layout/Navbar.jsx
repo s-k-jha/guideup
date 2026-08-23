@@ -65,7 +65,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
   const { user, logout } = useAuth()
-  const { openAuthDialog } = useAuthDialog()
+  const { openAuthDialog, requireAuth } = useAuthDialog()
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8)
@@ -99,6 +99,13 @@ export default function Navbar() {
               {link.label}
             </NavLink>
           ))}
+          <button
+            type="button"
+            onClick={() => requireAuth(() => navigate('/notes'))}
+            className="px-3.5 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 text-foreground/70 hover:text-foreground hover:bg-secondary"
+          >
+            Notes
+          </button>
         </nav>
 
         <div className="hidden lg:flex items-center gap-2">
@@ -132,6 +139,15 @@ export default function Navbar() {
                   </Link>
                 </SheetClose>
               ))}
+              <SheetClose asChild>
+                <button
+                  type="button"
+                  onClick={() => requireAuth(() => navigate('/notes'))}
+                  className="px-3.5 py-3 rounded-lg text-base font-medium text-foreground hover:bg-secondary transition-colors flex items-center gap-2 text-left"
+                >
+                  Notes
+                </button>
+              </SheetClose>
               {user && (
                 <>
                   <SheetClose asChild>
