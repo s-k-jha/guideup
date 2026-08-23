@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
-  LayoutDashboard, CalendarCheck, BookOpen, Users, Newspaper, LogOut, Menu, MessageCircle, Star,
+  LayoutDashboard, CalendarCheck, BookOpen, Users, Newspaper, LogOut, Menu, MessageCircle, Star, FileText,
 } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '../../lib/utils'
@@ -14,6 +14,7 @@ const NAV = [
   { icon: MessageCircle, label: 'Chat Orders', href: '/admin/chat-orders' },
   { icon: Star, label: 'Reviews', href: '/admin/reviews' },
   { icon: Newspaper, label: 'Blog', href: '/admin/blog' },
+  { icon: FileText, label: 'Notes', href: '/admin/notes' },
 ]
 
 function NavList({ onNavigate }) {

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Mail, Linkedin, Instagram, ShieldCheck, Star, ArrowRight, ArrowUp } from 'lucide-react'
 import { useAuthDialog } from '../../context/AuthDialogContext'
 import PlatformRatingDialog from '../marketing/PlatformRatingDialog'
@@ -14,6 +14,7 @@ const COLUMNS = [
       { label: 'Our Mentors', href: '/mentors' },
       { label: 'Talk to a Mentor', href: '/talk-to-mentor' },
       { label: 'Resources', href: '/blog' },
+      { label: 'Notes', action: 'notes' },
       { label: 'Become a Mentor', href: '/become-a-mentor' },
     ],
   },
@@ -55,9 +56,11 @@ function FooterLink({ children, className = '', as, ...props }) {
 
 export default function Footer() {
   const { requireAuth } = useAuthDialog()
+  const navigate = useNavigate()
   const [rateOpen, setRateOpen] = useState(false)
 
   const handleRatePlatform = () => requireAuth(() => setRateOpen(true))
+  const handleNotes = () => requireAuth(() => navigate('/notes'))
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' })
 
   return (
@@ -124,6 +127,10 @@ export default function Footer() {
                   <li key={link.label}>
                     {link.action === 'rate-platform' ? (
                       <FooterLink as="button" onClick={handleRatePlatform}>
+                        {link.label}
+                      </FooterLink>
+                    ) : link.action === 'notes' ? (
+                      <FooterLink as="button" onClick={handleNotes}>
                         {link.label}
                       </FooterLink>
                     ) : link.external ? (
