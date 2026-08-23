@@ -74,13 +74,13 @@ export default function Hero() {
 
       <Container className="relative py-14 sm:py-20 lg:py-16">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-flex items-center gap-3 mb-6">
-            <div className="flex items-center gap-0.5">
+          <div className="flex flex-col items-center gap-1.5 sm:flex-row sm:justify-center sm:gap-3 mb-6">
+            <div className="flex items-center gap-0.5 shrink-0">
               {Array.from({ length: 5 }).map((_, i) => (
                 <Star key={i} className="w-3.5 h-3.5 fill-primary-500 text-primary-500" />
               ))}
             </div>
-            <span className="text-sm text-foreground/80 text-left sm:text-center">
+            <span className="text-sm text-foreground/80 text-center max-w-[280px] sm:max-w-none">
               Built from the pain of <span className="font-semibold text-foreground">50K+ students</span>
               {' '}— so you don't have to feel this alone.
             </span>
