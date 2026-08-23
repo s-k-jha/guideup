@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import {
-  LayoutDashboard, CalendarCheck, BookOpen, Users, Newspaper, LogOut, Menu, MessageCircle, Star, FileText,
+  LayoutDashboard, CalendarCheck, BookOpen, Users, Newspaper, LogOut, Menu, MessageCircle, Star, FileText, BarChart3,
 } from 'lucide-react'
 import { useState } from 'react'
 import { cn } from '../../lib/utils'
@@ -8,6 +8,7 @@ import { Sheet, SheetContent } from '../ui/Sheet'
 
 const NAV = [
   { icon: LayoutDashboard, label: 'Dashboard', href: '/admin' },
+  { icon: BarChart3, label: 'Analytics', href: '/admin/analytics' },
   { icon: CalendarCheck, label: 'Bookings', href: '/admin/bookings' },
   { icon: BookOpen, label: 'Sessions', href: '/admin/sessions' },
   { icon: Users, label: 'Mentors', href: '/admin/mentors' },

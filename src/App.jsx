@@ -7,6 +7,7 @@ import { AuthDialogProvider } from './context/AuthDialogContext'
 import { MentorAuthProvider } from './context/MentorAuthContext'
 import PublicLayout from './components/layout/PublicLayout'
 import ScrollToTop from './components/ScrollToTop'
+import VisitorTracker from './components/VisitorTracker'
 import Toaster from './components/ui/Toaster'
 import { LoadingState } from './components/ui/States'
 import RequireAdminAuth from './components/admin/RequireAdminAuth'
@@ -53,6 +54,7 @@ const AdminBlogEditor = lazy(() => import('./pages/admin/AdminBlogEditor'))
 const AdminChatOrders = lazy(() => import('./pages/admin/AdminChatOrders'))
 const AdminReviews = lazy(() => import('./pages/admin/AdminReviews'))
 const AdminNotes = lazy(() => import('./pages/admin/AdminNotes'))
+const AdminAnalytics = lazy(() => import('./pages/admin/AdminAnalytics'))
 
 function PageFallback() {
   return <LoadingState className="min-h-[60vh]" label="" />
@@ -65,6 +67,7 @@ export default function App() {
       <AuthDialogProvider>
       <MentorAuthProvider>
       <ScrollToTop />
+      <VisitorTracker />
       <Suspense fallback={<PageFallback />}>
         <Routes>
           {/* Public marketing site — shared Navbar + Footer */}
@@ -106,6 +109,7 @@ export default function App() {
           <Route path="/admin/chat-orders" element={<RequireAdminAuth><AdminChatOrders /></RequireAdminAuth>} />
           <Route path="/admin/reviews" element={<RequireAdminAuth><AdminReviews /></RequireAdminAuth>} />
           <Route path="/admin/notes" element={<RequireAdminAuth><AdminNotes /></RequireAdminAuth>} />
+          <Route path="/admin/analytics" element={<RequireAdminAuth><AdminAnalytics /></RequireAdminAuth>} />
 
           {/* Mentor self-service portal */}
           <Route path="/mentor/login" element={<MentorLoginPage />} />
