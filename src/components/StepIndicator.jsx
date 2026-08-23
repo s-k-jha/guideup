@@ -1,12 +1,22 @@
 import { Check } from 'lucide-react'
 import { cn } from '../lib/utils'
 
-const STEPS = ['Session', 'Schedule', 'Checkout']
+const STEPS = [
+  { label: 'Session', description: 'Choose your practice round' },
+  { label: 'Schedule', description: 'Pick a date & time' },
+  { label: 'Checkout', description: 'Complete your booking' },
+]
 
-export default function StepIndicator({ current }) {
+export default function StepIndicator({ current, showDescriptions = false, align = 'center' }) {
   return (
-    <div className="flex items-center justify-center gap-2 py-5" role="progressbar" aria-valuenow={current} aria-valuemin={1} aria-valuemax={STEPS.length}>
-      {STEPS.map((label, i) => {
+    <div
+      className={cn('flex items-start gap-2 py-5', align === 'left' ? 'justify-start' : 'justify-center')}
+      role="progressbar"
+      aria-valuenow={current}
+      aria-valuemin={1}
+      aria-valuemax={STEPS.length}
+    >
+      {STEPS.map(({ label, description }, i) => {
         const step = i + 1
         const done = step < current
         const active = step === current
@@ -23,12 +33,17 @@ export default function StepIndicator({ current }) {
               >
                 {done ? <Check className="w-4 h-4" /> : step}
               </div>
-              <span className={cn('text-xs mt-1.5 font-medium', active ? 'text-primary-600' : done ? 'text-foreground/60' : 'text-muted-foreground/50')}>
+              <span className={cn('text-xs mt-1.5 font-semibold', active ? 'text-primary-600' : done ? 'text-foreground/60' : 'text-muted-foreground/50')}>
                 {label}
               </span>
+              {showDescriptions && (
+                <span className="hidden sm:block text-[11px] text-muted-foreground/70 mt-0.5 text-center">
+                  {description}
+                </span>
+              )}
             </div>
             {i < STEPS.length - 1 && (
-              <div className={cn('w-10 sm:w-14 h-0.5 mx-2 mb-4 transition-all duration-300', done ? 'bg-primary-400' : 'bg-border')} />
+              <div className={cn('w-10 sm:w-20 h-0.5 mx-2 mb-5 self-center transition-all duration-300', done ? 'bg-primary-400' : 'bg-border')} />
             )}
           </div>
         )

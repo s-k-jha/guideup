@@ -1,14 +1,24 @@
 import { X, Check } from 'lucide-react'
 import { Section, Container, SectionHeading } from '../layout/PageContainer'
 
-const OTHERS = ['₹2,000–20,000 bootcamp-style programs', 'Long multi-week commitments', 'Often theoretical, not interview-realistic']
-const GUIDEUP = ['Pay per session, starting under ₹500', 'Book a single round whenever you need it', 'Real interview format with working engineers']
+const OTHERS = [
+  '₹2,000–20,000 bootcamp-style programs',
+  'Long multi-week commitments',
+  'Often theoretical, not interview-realistic',
+  'Feels like another exam you might fail',
+]
+const GUIDEUP = [
+  'Pay per session, starting under ₹500',
+  'Book a single round whenever you need it',
+  'Real interview format with working engineers',
+  'Direct, judgment-free feedback — not a rejection letter',
+]
 
 export default function WhyGuideUp() {
   return (
     <Section className="bg-secondary/30">
       <Container>
-        <SectionHeading eyebrow="Why students choose GuideUp" title="Built to fit how students actually prepare" />
+        <SectionHeading eyebrow="Why students choose GuideUp" title="Built for students without a senior to rehearse with" />
 
         <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
           <div className="bg-card p-7 rounded-2xl border border-border">

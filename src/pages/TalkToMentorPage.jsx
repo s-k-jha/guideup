@@ -67,17 +67,18 @@ export default function TalkToMentorPage() {
   return (
     <>
       <Seo
-        title="Talk to a Mentor"
-        description="Connect instantly with a GuideUp mentor for quick career advice — your first chat is free."
+        title="Talk to a Mentor — Available Right Now"
+        description="Chat instantly with personalized mentors from top companies for DSA doubts, resume feedback, and placement guidance. Your first chat is free — no scheduling, no waiting."
         path="/talk-to-mentor"
       />
+
       <Section className="pt-10 sm:pt-14">
         <Container>
           <SectionHeading
             align="left"
-            eyebrow="Instant chat"
-            title="Talk to a mentor right now"
-            description="Quick 2-minute chats for career questions, resume doubts, or interview nerves — your first chat with any mentor is free."
+            eyebrow="Available right now"
+            title="Mentors who've actually been where you're trying to go"
+            description="SDEs, PMs, resume consultants, HR panelists — pick based on what's stressing you out today."
           />
 
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-8 -mt-6">

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Briefcase, Linkedin, ArrowRight, Clock, MessageCircle } from 'lucide-react'
 import { getPublicMentorBySlug } from '../api/mentors'
+import { getMentorAvatarUrl } from '../lib/mentorAvatar'
 import { useAuthDialog } from '../context/AuthDialogContext'
 import Seo, { absoluteUrl } from '../lib/seo'
 import { Container, Section } from '../components/layout/PageContainer'
@@ -67,7 +68,7 @@ export default function MentorProfilePage() {
         title={mentor.name}
         description={mentor.bio || `${mentor.name} is part of GuideUp's mock interview panel.`}
         path={`/mentors/${mentor.slug}`}
-        image={mentor.photoUrl}
+        image={getMentorAvatarUrl(mentor.slug || mentor.name, { format: 'png' })}
         type="profile"
         jsonLd={jsonLd}
       />
@@ -78,7 +79,7 @@ export default function MentorProfilePage() {
           <Card className="p-6 sm:p-8">
             <div className="flex flex-col sm:flex-row items-start gap-6">
               <Avatar className="h-24 w-24 shrink-0">
-                <AvatarImage src={mentor.photoUrl} alt={mentor.name} />
+                <AvatarImage src={getMentorAvatarUrl(mentor.slug || mentor.name)} alt={mentor.name} />
                 <AvatarFallback className="text-2xl">{mentor.name?.[0]}</AvatarFallback>
               </Avatar>
 

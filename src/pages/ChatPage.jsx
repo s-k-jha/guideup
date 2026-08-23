@@ -9,6 +9,7 @@ import Seo from '../lib/seo'
 import ChatRoom from '../components/chat/ChatRoom'
 import ChatReviewDialog from '../components/chat/ChatReviewDialog'
 import { getChatOrderAsUser, getChatMessagesAsUser } from '../api/chat'
+import { getMentorAvatarUrl } from '../lib/mentorAvatar'
 import { LoadingState } from '../components/ui/States'
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../components/ui/Dialog'
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/Avatar'
@@ -122,7 +123,7 @@ export default function ChatPage() {
         <DialogContent>
           <div className="text-center py-2">
             <Avatar className="h-14 w-14 mx-auto mb-4">
-              <AvatarImage src={endedMentor?.photoUrl} alt={endedMentor?.name} />
+              <AvatarImage src={endedMentor && getMentorAvatarUrl(endedMentor.slug || endedMentor.name)} alt={endedMentor?.name} />
               <AvatarFallback>{endedMentor?.name?.[0] || '?'}</AvatarFallback>
             </Avatar>
             <DialogTitle className="mb-2">Chat ended</DialogTitle>

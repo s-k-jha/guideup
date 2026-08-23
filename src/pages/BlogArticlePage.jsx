@@ -133,7 +133,7 @@ export default function BlogArticlePage() {
 
           <Card className="mt-10 p-6 flex flex-col sm:flex-row items-center gap-4 bg-primary-50 border-primary-100">
             <p className="text-sm text-primary-900 flex-1 text-center sm:text-left">
-              Ready to put this into practice? Book a mock interview with a real engineer.
+              Ready to put this into practice? Book a mock interview with your personalized mentor.
             </p>
             <Button asChild>
               <Link to="/sessions">Book a Mock Interview <ArrowRight className="w-4 h-4" /></Link>

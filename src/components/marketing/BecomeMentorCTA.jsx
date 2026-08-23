@@ -14,7 +14,7 @@ export default function BecomeMentorCTA() {
           <div className="flex-1 text-center sm:text-left">
             <h2 className="text-h3 text-foreground mb-2">Working engineer? Help students avoid your early mistakes.</h2>
             <p className="text-muted-foreground max-w-xl">
-              Join GuideUp's interview panel. Conduct mock interviews on your own schedule and get paid for your time.
+              Your schedule. Your pace. Get paid per session.
             </p>
           </div>
           <Button size="lg" variant="outline" asChild className="shrink-0">

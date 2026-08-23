@@ -4,6 +4,7 @@ import { ArrowLeft, Send, CheckCircle2, Check, Clock, Loader2, MessageCircle, Sp
 import { getSocket, disconnectSocket } from '../../lib/socket'
 import { useToast } from '../../hooks/use-toast'
 import { cn } from '../../lib/utils'
+import { getMentorAvatarUrl } from '../../lib/mentorAvatar'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/Avatar'
 import Button from '../ui/Button'
 import { Skeleton } from '../ui/Skeleton'
@@ -204,7 +205,9 @@ export default function ChatRoom({ chatOrderId, token, role, fetchOrder, fetchMe
   }
 
   const otherName = role === 'user' ? order?.mentorId?.name : order?.userId?.name
-  const otherPhoto = role === 'user' ? order?.mentorId?.photoUrl : undefined
+  const otherPhoto = role === 'user' && order?.mentorId
+    ? getMentorAvatarUrl(order.mentorId.slug || order.mentorId.name)
+    : undefined
   const isAiHandled = !!order?.aiHandled
 
   const statusLabel = ended ? 'Chat ended' : chatActive ? 'Connected' : joined ? `Waiting for ${waitingLabel}…` : 'Connecting…'

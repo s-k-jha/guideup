@@ -1,45 +1,62 @@
+import { useEffect, useState } from 'react'
 import { Section, Container, SectionHeading } from '../layout/PageContainer'
+import { cn } from '../../lib/utils'
 
-const STEPS = [
-  {
-    title: 'First interview: shock',
-    text: 'Confusion about format, expectations, and how deep the questions actually go.',
-  },
-  {
-    title: 'Second interview: realization',
-    text: 'You start to see how much preparation this really takes — and how little you did.',
-  },
-  {
-    title: 'Third interview: confidence',
-    text: 'By now you understand the pattern. GuideUp gets you here before placements start.',
-  },
+const STAGES = [
+  { emoji: '😳', label: 'Shock', text: 'First interview blindsided you.' },
+  { emoji: '😮‍💨', label: 'Reality check', text: 'Prep takes way more than YouTube.' },
+  { emoji: '💪', label: 'Confidence', text: 'Now you know exactly what to expect.' },
 ]
 
 export default function ProblemSection() {
+  const [active, setActive] = useState(0)
+
+  useEffect(() => {
+    const id = setInterval(() => setActive((a) => (a + 1) % STAGES.length), 3200)
+    return () => clearInterval(id)
+  }, [])
+
   return (
     <Section>
       <Container>
         <SectionHeading
           eyebrow="Why GuideUp exists"
-          title="Most students learn how interviews work only after losing real opportunities"
-          description="A single bad first interview shouldn't cost you the internship you were counting on."
+          title="IIT kids get this from seniors. You get it from us."
+          description="One bad first interview shouldn't cost you the internship."
         />
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {STEPS.map((step, i) => (
-            <div key={step.title} className="rounded-xl border border-border bg-card p-6">
-              <span className="inline-flex w-8 h-8 rounded-full bg-primary-50 text-primary-600 font-display font-bold text-sm items-center justify-center mb-4">
-                {i + 1}
-              </span>
-              <h3 className="font-semibold text-foreground mb-2">{step.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed">{step.text}</p>
-            </div>
-          ))}
+        <div className="max-w-xl mx-auto">
+          <div className="grid grid-cols-3 gap-3 mb-5">
+            {STAGES.map((stage, i) => (
+              <button
+                key={stage.label}
+                onClick={() => setActive(i)}
+                aria-pressed={active === i}
+                className={cn(
+                  'flex flex-col items-center gap-2 py-4 rounded-2xl border transition-all duration-300',
+                  active === i
+                    ? 'border-primary-500 bg-primary-50 shadow-card-hover scale-[1.03]'
+                    : 'border-border bg-card opacity-60 hover:opacity-100'
+                )}
+              >
+                <span className="text-3xl leading-none">{stage.emoji}</span>
+                <span className={cn('text-xs font-semibold', active === i ? 'text-primary-700' : 'text-foreground')}>
+                  {stage.label}
+                </span>
+              </button>
+            ))}
+          </div>
+
+          <div className="text-center rounded-2xl bg-secondary/40 px-6 py-5">
+            <p key={active} className="text-lg font-semibold text-foreground animate-fade-in">
+              {STAGES[active].text}
+            </p>
+          </div>
         </div>
 
-        <p className="text-center mt-12 text-lg text-foreground/80 max-w-2xl mx-auto text-balance">
-          GuideUp helps you go through that curve <span className="font-semibold text-foreground">before</span> a
-          real placement is on the line.
+        <p className="text-center mt-8 text-base text-foreground/80 max-w-lg mx-auto text-balance">
+          GuideUp gets you to <span className="font-semibold text-foreground">💪 confidence</span> — before a real
+          placement is on the line. Akele nahi.
         </p>
       </Container>
     </Section>

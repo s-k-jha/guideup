@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Briefcase, CheckCircle2, Users } from 'lucide-react'
 import { getPublicMentors } from '../../api/mentors'
+import { getMentorAvatarUrl } from '../../lib/mentorAvatar'
 import { Section, Container, SectionHeading } from '../layout/PageContainer'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/Avatar'
 import Badge from '../ui/Badge'
@@ -33,8 +34,8 @@ export default function MentorPanelPreview() {
       <Container className="relative">
         <SectionHeading
           eyebrow="Meet the panel"
-          title="Real engineers, not generic interviewers"
-          description="A mentor is assigned to your session after booking — here are some of the people on our panel."
+          title="Personalized mentors, not generic interviewers"
+          description="Assigned to your session after booking. Not a generic placeholder."
         />
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -56,7 +57,7 @@ export default function MentorPanelPreview() {
 
                   <div className="relative w-fit mx-auto mb-4">
                     <Avatar className="h-16 w-16 ring-4 ring-primary-50 group-hover:ring-primary-100 transition-colors duration-300">
-                      <AvatarImage src={m.photoUrl} alt={m.name} />
+                      <AvatarImage src={getMentorAvatarUrl(m.slug || m.name)} alt={m.name} />
                       <AvatarFallback className="text-lg">{m.name?.[0]}</AvatarFallback>
                     </Avatar>
                     <span className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary-600 border-2 border-card flex items-center justify-center">
@@ -87,7 +88,7 @@ export default function MentorPanelPreview() {
                 <div className="flex items-center -space-x-2.5">
                   {remaining.map((m) => (
                     <Avatar key={m.slug} className="h-7 w-7 ring-2 ring-card">
-                      <AvatarImage src={m.photoUrl} alt={m.name} />
+                      <AvatarImage src={getMentorAvatarUrl(m.slug || m.name)} alt={m.name} />
                       <AvatarFallback className="text-[10px]">{m.name?.[0]}</AvatarFallback>
                     </Avatar>
                   ))}
