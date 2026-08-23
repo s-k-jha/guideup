@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Sparkles, CheckCircle2 } from 'lucide-react'
 import { submitReview } from '../../api/reviews'
+import { getMentorAvatarUrl } from '../../lib/mentorAvatar'
 import { useToast } from '../../hooks/use-toast'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/Dialog'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/Avatar'
@@ -89,7 +90,7 @@ export default function ChatReviewDialog({ open, onOpenChange, chatOrder, onDone
                 <div className="rounded-xl border border-border bg-secondary/30 p-4">
                   <div className="flex items-center gap-2.5 mb-3">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={mentor?.photoUrl} alt={mentor?.name} />
+                      <AvatarImage src={mentor && getMentorAvatarUrl(mentor.slug || mentor.name)} alt={mentor?.name} />
                       <AvatarFallback className="text-xs">{mentor?.name?.[0] || '?'}</AvatarFallback>
                     </Avatar>
                     <div className="text-sm font-medium text-foreground">

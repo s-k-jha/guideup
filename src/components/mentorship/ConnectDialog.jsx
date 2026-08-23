@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { CheckCircle2, IndianRupee, Sparkles, Clock, Wallet, MessageCircle } from 'lucide-react'
 import { getChatPricing, createChatOrder } from '../../api/chatOrders'
 import { getMinRecharge } from '../../api/wallet'
+import { getMentorAvatarUrl } from '../../lib/mentorAvatar'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '../ui/Dialog'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/Avatar'
 import Button from '../ui/Button'
@@ -108,7 +109,7 @@ export default function ConnectDialog({ mentor, open, onOpenChange }) {
 
               <div className="flex items-center gap-3 mb-4">
                 <Avatar className="h-12 w-12">
-                  <AvatarImage src={mentor.photoUrl} alt={mentor.name} />
+                  <AvatarImage src={getMentorAvatarUrl(mentor.slug || mentor.name)} alt={mentor.name} />
                   <AvatarFallback>{mentor.name?.[0]}</AvatarFallback>
                 </Avatar>
                 <div>

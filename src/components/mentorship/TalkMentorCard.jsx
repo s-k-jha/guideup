@@ -1,5 +1,6 @@
 import { Briefcase, IndianRupee, Sparkles } from 'lucide-react'
 import { cn } from '../../lib/utils'
+import { getMentorAvatarUrl } from '../../lib/mentorAvatar'
 import { Card } from '../ui/Card'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/Avatar'
 import Badge from '../ui/Badge'
@@ -25,7 +26,7 @@ export default function TalkMentorCard({ mentor, pricing, onConnect, connecting 
       <div className="flex items-center gap-3 mb-3">
         <div className="relative shrink-0">
           <Avatar className={cn('h-12 w-12 ring-2 ring-offset-2 ring-offset-card', isBusy ? 'ring-destructive' : 'ring-success')}>
-            <AvatarImage src={mentor.photoUrl} alt={mentor.name} />
+            <AvatarImage src={getMentorAvatarUrl(mentor.slug || mentor.name)} alt={mentor.name} />
             <AvatarFallback>{mentor.name?.[0]}</AvatarFallback>
           </Avatar>
           <span

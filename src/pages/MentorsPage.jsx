@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Briefcase, ArrowRight } from 'lucide-react'
 import { getPublicMentors } from '../api/mentors'
+import { getMentorAvatarUrl } from '../lib/mentorAvatar'
 import Seo from '../lib/seo'
 import { Container, Section, SectionHeading } from '../components/layout/PageContainer'
 import { Card } from '../components/ui/Card'
@@ -31,7 +32,7 @@ export default function MentorsPage() {
           <SectionHeading
             align="left"
             eyebrow="Our panel"
-            title="Real engineers, not generic interviewers"
+            title="Personalized mentors, not generic interviewers"
             description="Every GuideUp mock interview is conducted by a working professional. Book a session and a mentor from this panel is assigned to you."
           />
 
@@ -52,7 +53,7 @@ export default function MentorsPage() {
                   <Card hover className="p-6 h-full">
                     <div className="flex items-center gap-3 mb-4">
                       <Avatar className="h-14 w-14">
-                        <AvatarImage src={m.photoUrl} alt={m.name} />
+                        <AvatarImage src={getMentorAvatarUrl(m.slug || m.name)} alt={m.name} />
                         <AvatarFallback className="text-lg">{m.name?.[0]}</AvatarFallback>
                       </Avatar>
                       <div className="min-w-0">

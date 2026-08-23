@@ -10,6 +10,7 @@ import WhyGuideUp from '../components/marketing/WhyGuideUp'
 import ResourcesPreview from '../components/marketing/ResourcesPreview'
 import BecomeMentorCTA from '../components/marketing/BecomeMentorCTA'
 import FAQ from '../components/marketing/FAQ'
+import TalkToMentorPromo from '../components/marketing/TalkToMentorPromo'
 import FinalCTA from '../components/marketing/FinalCTA'
 
 const organizationJsonLd = {
@@ -47,6 +48,7 @@ export default function LandingPage() {
       <ResourcesPreview />
       <BecomeMentorCTA />
       <FAQ />
+      <TalkToMentorPromo />
       <FinalCTA />
     </>
   )

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Clock, IndianRupee, MessageCircle } from 'lucide-react'
 import { getMyChatOrders } from '../api/chatOrders'
+import { getMentorAvatarUrl } from '../lib/mentorAvatar'
 import { useAuth } from '../context/AuthContext'
 import Seo from '../lib/seo'
 import { Container, Section, SectionHeading } from '../components/layout/PageContainer'
@@ -53,7 +54,7 @@ export default function MyChatsPage() {
               {orders.map((o) => (
                 <Card key={o._id} className="p-4 flex items-center gap-4">
                   <Avatar className="h-10 w-10 shrink-0">
-                    <AvatarImage src={o.mentorId?.photoUrl} alt={o.mentorId?.name} />
+                    <AvatarImage src={o.mentorId && getMentorAvatarUrl(o.mentorId.slug || o.mentorId.name)} alt={o.mentorId?.name} />
                     <AvatarFallback>{o.mentorId?.name?.[0]}</AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1">
