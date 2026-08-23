@@ -1,0 +1,14 @@
+node_modules
+dist
+npm-debug.log
+.env
+.env.*
+!.env.example
+.git
+.gitignore
+*.md
+guideup.code-workspace
+landing-background*.jpg
+landing-ui*.png
+session-ui.png
+become-mentor.png
